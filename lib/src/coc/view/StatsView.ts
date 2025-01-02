@@ -52,6 +52,11 @@ export class StatsView {
     public refresh(): void {
         this.name.setText(this.model.player.short);
 
+        this.stats.hp.setMaxNumber(this.model.maxHP());
+        this.stats.lust.setMaxNumber(100);
+        this.stats.cor.setMaxNumber(100);
+        this.stats.xp.setMaxNumber((this.model.player.level) * 100); 
+
         this.stats.str.setNumber(this.model.player.str);
         this.stats.tou.setNumber(this.model.player.tou);
         this.stats.spe.setNumber(this.model.player.spe);

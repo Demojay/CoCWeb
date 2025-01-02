@@ -17,6 +17,6 @@ export class TimeView {
     }
 
     public setHour(hour: number) {
-        this.hour.textContent = 'Time: ' + hour;
+        this.hour.textContent = 'Time: ' + hour + ':00';
     }
 }
