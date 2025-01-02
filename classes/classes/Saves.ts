@@ -90,28 +90,26 @@ export class Saves extends BaseContent {
 
         this.outputText("<b><u>Slot: Sex,  Game Days Played</u></b>\r", true);
 
-        for (var i: number = 0; i < this.saveFileNames.length; i += 1) {
-            var test: Record<string, any> = this.getSaveObj(this.saveFileNames[i]);
+        this.saveFileNames.forEach((name, i) => {
+            const test: Record<string, any> = this.getSaveObj(name);
+
             this.outputText(this.loadSaveDisplay(test, String(i + 1)), false);
             if (test.exists && test.flags[2066] == undefined) {
-                //trace("Creating function with indice = ", i);
-                ((i: number) => {
-                    slots[i] = () => {
-                        trace("Loading save with name", this.saveFileNames[i], "at index", i);
-                        this.loadGame(this.saveFileNames[i]);
-                        // if (this.loadGame(this.saveFileNames[i])) {
-                        //     this.doNext(this.playerMenu);
-                        //     this.showStats();
-                        //     this.statScreenRefresh();
-                        //     this.outputText("Slot " + i + " Loaded!", true);
-                        // }
-                    }
-                })(i);
+                // trace("Creating function with indice = ", i);
+                slots[i] = () => {
+                    trace("Loading save with name", name, "at index", i);
+                    this.loadGame(name);
+                    // if (this.loadGame(name)) {
+                    //     this.doNext(this.playerMenu);
+                    //     this.showStats();
+                    //     this.statScreenRefresh();
+                    //     this.outx("Slot " + i + " Loaded!", true);
+                    // }
+                };
+            } else {
+                slots[i] = undefined; // You have to set the parameter to 0 to disable the button
             }
-            else {
-                slots[i] = undefined;		// You have to set the parameter to 0 to disable the button
-            }
-        }
+        });
 
         this.choices("Slot 1", slots[0],
             "Slot 2", slots[1],
@@ -243,7 +241,7 @@ export class Saves extends BaseContent {
     }
 
     private saveToFile(notes: HTMLInputElement): void {
-        this.saveGameObject("CoC_" + this.player.short, notes);
+        this.saveGameObject("CoC_" + this.player.short, notes, true);
     }
 
     private loadFromFile(): void {
@@ -264,23 +262,17 @@ export class Saves extends BaseContent {
         var delFuncs: any[] = [];
 
 
-        for (var i: number = 0; i < this.saveFileNames.length; i += 1) {
-            var test: Record<string, any> = this.getSaveObj(this.saveFileNames[i]);
-            this.outputText(this.loadSaveDisplay(test, String(i + 1)), false);
-            if (test.exists) {
-                //slots[i] = loadFuncs[i];
+        this.saveFileNames.forEach((name, i) => {
+            const test: Record<string, any> = this.getSaveObj(name);
 
-                trace("Creating function with indice = ", i);
-                ((i: number) => {
-                    delFuncs[i] = () => {
-                        this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION] = this.saveFileNames[i];
-                        this.confirmDelete();
-                    }
-                })(i);
-            }
-            else
-                delFuncs[i] = undefined;	//disable buttons for empty slots
-        }
+            this.outputText(this.loadSaveDisplay(test, String(i + 1)), false);
+            delFuncs[i] = test.exists
+                ? () => {
+                      this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION] = name;
+                      this.confirmDelete();
+                  }
+                : undefined; // disable buttons for empty slots
+        });
 
         this.outputText("\n<b>ONCE DELETED, YOUR SAVE IS GONE FOREVER.</b>", false);
         this.choices("Slot 1", delFuncs[0],
@@ -301,14 +293,29 @@ export class Saves extends BaseContent {
     }
 
     public purgeTheMutant(): void {
-        var test: any = this.getSaveObj(this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION] + '');
-        trace("DELETING SLOT: " + this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION]);
-        var blah: any[] = ["been virus bombed", "been purged", "been vaped", "been nuked from orbit", "taken an arrow to the knee", "fallen on its sword", "lost its reality matrix cohesion", "been cleansed", "suffered the following error: (404) Porn Not Found"];
+        const slot = `${this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION]}`
 
-        trace(blah.length + " array slots");
-        var select: number = Saves.rand(blah.length);
-        this.outputText(this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION] + " has " + blah[select] + ".", true);
-        test.clear();
+        const test: any = this.getSaveObj(slot);
+        trace(`DELETING SLOT: ${this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION]}`);
+        const commentList: string[] = [
+            "been virus bombed",
+            "been purged",
+            "been vaped",
+            "been nuked from orbit",
+            "taken an arrow to the knee",
+            "fallen on its sword",
+            "lost its reality matrix cohesion",
+            "been cleansed",
+            "suffered the following error: (404) Porn Not Found",
+        ];
+
+        trace(`${commentList.length} array slots`);
+        const comment = Saves.randomChoiceTyped(commentList);
+        this.outputText(`${this.flags[kFLAGS.TEMP_STORAGE_SAVE_DELETION]} has ${comment}.`, true);
+
+        localStorage.removeItem(slot)
+
+
         this.doNext(this.deleteScreen);
     }
 
@@ -558,7 +565,7 @@ export class Saves extends BaseContent {
             for (i = 0; i < this.player.cocks.length; i++) {
                 saveFile.cocks[i].cockThickness = this.player.cocks[i].cockThickness;
                 saveFile.cocks[i].cockLength = this.player.cocks[i].cockLength;
-                saveFile.cocks[i].cockType = this.player.cocks[i].cockType.Index;
+                saveFile.cocks[i].cockType = this.player.cocks[i].cockType;
                 saveFile.cocks[i].knotMultiplier = this.player.cocks[i].knotMultiplier;
                 saveFile.cocks[i].pierced = this.player.cocks[i].pierced;
                 saveFile.cocks[i].pShortDesc = this.player.cocks[i].pShortDesc;
@@ -697,27 +704,27 @@ export class Saves extends BaseContent {
             saveFile.beeProgress = 0; //Now saved in a flag. getGame().beeProgress;
 
             //ITEMZ. Item1s
-            saveFile.itemSlot1 = [];
+            saveFile.itemSlot1 = {};
             saveFile.itemSlot1.quantity = this.player.itemSlot1.quantity;
             saveFile.itemSlot1.id = this.player.itemSlot1.itype.id;
             saveFile.itemSlot1.unlocked = true;
 
-            saveFile.itemSlot2 = [];
+            saveFile.itemSlot2 = {};
             saveFile.itemSlot2.quantity = this.player.itemSlot2.quantity;
             saveFile.itemSlot2.id = this.player.itemSlot2.itype.id;
             saveFile.itemSlot2.unlocked = true;
 
-            saveFile.itemSlot3 = [];
+            saveFile.itemSlot3 = {};
             saveFile.itemSlot3.quantity = this.player.itemSlot3.quantity;
             saveFile.itemSlot3.id = this.player.itemSlot3.itype.id;
             saveFile.itemSlot3.unlocked = true;
 
-            saveFile.itemSlot4 = [];
+            saveFile.itemSlot4 = {};
             saveFile.itemSlot4.quantity = this.player.itemSlot4.quantity;
             saveFile.itemSlot4.id = this.player.itemSlot4.itype.id;
             saveFile.itemSlot4.unlocked = this.player.itemSlot4.unlocked;
 
-            saveFile.itemSlot5 = [];
+            saveFile.itemSlot5 = {};
             saveFile.itemSlot5.quantity = this.player.itemSlot5.quantity;
             saveFile.itemSlot5.id = this.player.itemSlot5.itype.id;
             saveFile.itemSlot5.unlocked = this.player.itemSlot5.unlocked;
@@ -726,12 +733,16 @@ export class Saves extends BaseContent {
             saveFile.controls = this.getGame().inputManager.SaveBindsToObj();
         }
         catch (error) {
-            trace(error.message);
+            if (error instanceof Error) {
+                trace(error.message);
 
-            this.outputText("There was a processing error during saving. Please report the following message:\n\n");
-            this.outputText(error.message);
-            this.outputText("\n\n");
-            this.outputText(error.getStackTrace());
+                this.outputText("There was a processing error during saving. Please report the following message:\n\n");
+                this.outputText(error.message);
+                this.outputText("\n\n");
+                if (error.stack) {
+                    this.outputText(error.stack);
+                }
+            }
         }
 
 
@@ -741,11 +752,15 @@ export class Saves extends BaseContent {
         // Really, something needs to listen for the FileReference.complete event, and re-enable saving/loading then.
         // Something to do in the future
         if (exportFile) {
-            //outputText(serializeToString(saveFile), true);
-            saveAs(JSON.stringify(saveFile), 'cocsave');
+            // outputText(serializeToString(saveFile), true);
+            let text = JSON.stringify(saveFile, null, 2)
+            let blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+            let filename = this.generateFilename(slot);
+
+            saveAs(blob, filename);
+            
             this.outputText("Attempted to save to file.", true);
-        }
-        else {
+        } else {
             // Write the file
             // saveFile.flush();
             localStorage.setItem(slot, JSON.stringify(saveFile));
@@ -788,6 +803,15 @@ export class Saves extends BaseContent {
             this.addButton(9, "Restore", this.restore, slot);
         }
 
+    }
+
+    private generateFilename(saveName: string) {
+        let domain = location.host.replace(/\./g, '-').replace(/-[^-]+$/, '');
+        let save = saveName.replace(/^CoC_?/, '').replace(/_/g, '');
+        let time = new Date().toISOString().replace(/T(\d+):(\d+).*/g, '--$1-$2');
+        let pre = `CoC--${domain}--${save}--${time}.coc`;
+        let filename = pre.replace(/[\\/:*"<>|]/, '').replace(/ /g, '_');
+        return filename;
     }
 
     public restore(slotName: string): void {
@@ -1494,31 +1518,31 @@ export class Saves extends BaseContent {
             //The flag will be zero for any older save that still uses beeProgress and newer saves always store a zero in beeProgress, so we only need to update the flag on a value of one.
 
             //ITEMZ. Item1
-            if (saveFile.itemSlot1.shortName) {
+            if (saveFile.itemSlot1 && saveFile.itemSlot1.shortName) {
                 if (saveFile.itemSlot1.shortName.indexOf("Gro+") != -1)
                     saveFile.itemSlot1.id = "GroPlus";
                 else if (saveFile.itemSlot1.shortName.indexOf("Sp Honey") != -1)
                     saveFile.itemSlot1.id = "SpHoney";
             }
-            if (saveFile.itemSlot2.shortName) {
+            if (saveFile.itemSlot2 && saveFile.itemSlot2.shortName) {
                 if (saveFile.itemSlot2.shortName.indexOf("Gro+") != -1)
                     saveFile.itemSlot2.id = "GroPlus";
                 else if (saveFile.itemSlot2.shortName.indexOf("Sp Honey") != -1)
                     saveFile.itemSlot2.id = "SpHoney";
             }
-            if (saveFile.itemSlot3.shortName) {
+            if (saveFile.itemSlot3 && saveFile.itemSlot3.shortName) {
                 if (saveFile.itemSlot3.shortName.indexOf("Gro+") != -1)
                     saveFile.itemSlot3.id = "GroPlus";
                 else if (saveFile.itemSlot3.shortName.indexOf("Sp Honey") != -1)
                     saveFile.itemSlot3.id = "SpHoney";
             }
-            if (saveFile.itemSlot4.shortName) {
+            if (saveFile.itemSlot4 && saveFile.itemSlot4.shortName) {
                 if (saveFile.itemSlot4.shortName.indexOf("Gro+") != -1)
                     saveFile.itemSlot4.id = "GroPlus";
                 else if (saveFile.itemSlot4.shortName.indexOf("Sp Honey") != -1)
                     saveFile.itemSlot4.id = "SpHoney";
             }
-            if (saveFile.itemSlot5.shortName) {
+            if (saveFile.itemSlot5 && saveFile.itemSlot5.shortName) {
                 if (saveFile.itemSlot5.shortName.indexOf("Gro+") != -1)
                     saveFile.itemSlot5.id = "GroPlus";
                 else if (saveFile.itemSlot5.shortName.indexOf("Sp Honey") != -1)
@@ -1527,25 +1551,44 @@ export class Saves extends BaseContent {
 
 
             this.player.itemSlot1.unlocked = true;
-            this.player.itemSlot1.setItemAndQty(ItemType.lookupItem(
-                saveFile.itemSlot1.id || saveFile.itemSlot1.shortName),
-                saveFile.itemSlot1.quantity);
+            if (saveFile.itemSlot1) {
+                this.player.itemSlot1.setItemAndQty(ItemType.lookupItem(
+                    saveFile.itemSlot1.id || saveFile.itemSlot1.shortName), saveFile.itemSlot1.quantity);
+            } else {
+                this.player.itemSlot1.emptySlot();
+            }
+
             this.player.itemSlot2.unlocked = true;
-            this.player.itemSlot2.setItemAndQty(ItemType.lookupItem(
-                saveFile.itemSlot2.id || saveFile.itemSlot2.shortName),
-                saveFile.itemSlot2.quantity);
+            if (saveFile.itemSlot2) {
+                this.player.itemSlot2.setItemAndQty(ItemType.lookupItem(
+                    saveFile.itemSlot2.id || saveFile.itemSlot2.shortName), saveFile.itemSlot2.quantity);
+            } else {
+                this.player.itemSlot2.emptySlot();
+            }
+
             this.player.itemSlot3.unlocked = true;
-            this.player.itemSlot3.setItemAndQty(ItemType.lookupItem(
-                saveFile.itemSlot3.id || saveFile.itemSlot3.shortName),
-                saveFile.itemSlot3.quantity);
+            if (saveFile.itemSlot3) {
+                this.player.itemSlot3.setItemAndQty(ItemType.lookupItem(
+                    saveFile.itemSlot3.id || saveFile.itemSlot3.shortName), saveFile.itemSlot3.quantity);
+            } else {
+                this.player.itemSlot3.emptySlot();
+            }
+
             this.player.itemSlot4.unlocked = saveFile.itemSlot4.unlocked;
-            this.player.itemSlot4.setItemAndQty(ItemType.lookupItem(
-                saveFile.itemSlot4.id || saveFile.itemSlot4.shortName),
-                saveFile.itemSlot4.quantity);
+            if (saveFile.itemSlot4) {
+                this.player.itemSlot4.setItemAndQty(ItemType.lookupItem(
+                    saveFile.itemSlot4.id || saveFile.itemSlot4.shortName), saveFile.itemSlot4.quantity);
+            } else {
+                this.player.itemSlot4.emptySlot();
+            }
+
             this.player.itemSlot5.unlocked = saveFile.itemSlot5.unlocked;
-            this.player.itemSlot5.setItemAndQty(ItemType.lookupItem(
-                saveFile.itemSlot5.id || saveFile.itemSlot5.shortName),
-                saveFile.itemSlot5.quantity);
+            if (saveFile.itemSlot5) {
+                this.player.itemSlot5.setItemAndQty(ItemType.lookupItem(
+                    saveFile.itemSlot5.id || saveFile.itemSlot5.shortName), saveFile.itemSlot5.quantity);
+            } else {
+                this.player.itemSlot5.emptySlot();
+            }
 
             CoC.loadAllAwareClasses(this.getGame()); //Informs each saveAwareClass that it must load its values from the flags array
             this.unFuckSave();
