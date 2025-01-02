@@ -10,6 +10,8 @@ export class StatView {
     protected arrowUp: HTMLElement;
     protected arrowDown: HTMLElement;
 
+    protected maxNumber: number;
+
     public constructor(id: string, name: string) {
         this.element = loadId(id);
 
@@ -24,6 +26,8 @@ export class StatView {
 
         this.arrowUp = loadClass('arrowUp', this.element);
         this.arrowDown = loadClass('arrowDown', this.element);
+
+        this.maxNumber = 0;
     }
 
     protected loadClass(className: string) {
@@ -34,7 +38,7 @@ export class StatView {
     }
 
     public setNumber(num: number) {
-        this.currNumber.textContent = Math.round(num) + '';
+        this.currNumber.textContent = Math.round(num) + (this.maxNumber > 0? '/' + this.maxNumber: '');
     }
 
     public showUp() {
@@ -50,6 +54,10 @@ export class StatView {
     public hideArrows() {
         this.arrowUp.classList.add('hidden');
         this.arrowDown.classList.add('hidden');
+    }
+    
+    public setMaxNumber(num: number) {
+        this.maxNumber = Math.round(num);
     }
 }
 

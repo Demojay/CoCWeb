@@ -50,8 +50,16 @@ body {
 
 .statPanel {
     position: relative;
-    height: 6.8%;
+    height: 4.7%;
     display: flex;
+}
+
+.statStatus {
+    position: relative;
+    width: 85%;
+    border-width: 1px;
+    border-bottom: solid;
+    border-color: #000000;
 }
 
 .statPanel.noBar {
@@ -60,26 +68,40 @@ body {
 
 .statInfo {
     height: 100%;
-    width: 60%;
+    position: relative;
 }
 
 .statName {
     font-family: Consolas, monospace;
-    font-size: 1.25em;
+    font-size: 1em;
     letter-spacing: -1.2px;
+    position: absolute;
+    bottom: 3px;
+    z-index: 2;
 }
 
 .statBar {
-    height: 50%;
-    background-color: #690000;
+    height: 100%;
+    background-color: #bd5a1c;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    transition-property: width;
+    transition-timing-function: linear;
+    transition-duration: 0.5s;
 }
 
 .statNumbers {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
     font-family: monospace;
-    font-size: 1.75em;
+    font-size: 1.25em;
     text-align: right;
+    font-weight: bold;
     height: 100%;
-    width: 25%;
+    width: 40%;
     overflow: hidden;
 }
 
@@ -125,7 +147,7 @@ body {
 
 .arrowIcon {
     position: absolute;
-    width: 17%;
+    width: 15%;
     left: 85%;
 }
 
