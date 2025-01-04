@@ -5,10 +5,11 @@ import { Player } from "../../../../classes/classes/Player";
 import { NameView } from "./NameView";
 import { loadId } from "./LoadUtils";
 
-export type StatKeys = 'str' | 'tou' | 'spe' | 'inte' | 'lib' | 'sens' | 'cor' | 'hp' | 'lust' | 'fatigue';
-export type OtherKeys = 'level' | 'xp' | 'gems';
+export type StatKeys = 'str' | 'tou' | 'spe' | 'inte' | 'lib' | 'sens' | 'cor' | 'hp' | 'lust' | 'fatigue' | 'xp';
+export type OtherKeys = 'level' | 'gems';
 
 export class StatsView {
+    
     private model: GameModel;
     private element: HTMLElement;
     private name: NameView;
@@ -37,7 +38,7 @@ export class StatsView {
         this.stats.fatigue = new StatViewWithBar('fatiguePanel', 'Fatigue');
 
         this.stats.level = new StatView('levelPanel', 'Level');
-        this.stats.xp = new StatView('xpPanel', 'Experience');
+        this.stats.xp = new StatViewWithBar('xpPanel', 'Experience');
         this.stats.gems = new StatView('gemsPanel', 'Gems');
 
         this.time = new TimeView();
@@ -81,6 +82,7 @@ export class StatsView {
 
         this.stats.level.setNumber(this.model.player.level);
         this.stats.xp.setNumber(this.model.player.XP);
+        this.stats.xp.setBar(this.model.player.XP / ((this.model.player.level) * 100));
         this.stats.gems.setNumber(this.model.player.gems);
 
         this.time.setDay(this.model.time.days);

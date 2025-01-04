@@ -3324,18 +3324,22 @@ convert "
     // include "../../includes/combat.as";
 
     public endHpVictory(): void {
+        this.mainView.monsterView.hide();
         this.monster.defeated_(true);
     }
 
     public endLustVictory(): void {
+        this.mainView.monsterView.hide();
         this.monster.defeated_(false);
     }
 
     public endHpLoss(): void {
+        this.mainView.monsterView.hide();
         this.monster.won_(true, false);
     }
 
     public endLustLoss(): void {
+        this.mainView.monsterView.hide();
         if (this.player.findStatusAffect(StatusAffects.Infested) >= 0 && this.flags[kFLAGS.CAME_WORMS_AFTER_COMBAT] == 0) {
             this.flags[kFLAGS.CAME_WORMS_AFTER_COMBAT] = 1;
             this.infestOrgasm();
@@ -3428,6 +3432,7 @@ convert "
         this.mainView.hideMenuButton(MainView.MENU_APPEARANCE);
         this.mainView.hideMenuButton(MainView.MENU_PERKS);
         this.hideUpDown();
+        this.mainView.monsterView.hideArrows();
         if (newRound) this.combatStatusesUpdate(); //Update Combat Statuses
         this.display();
         this.statScreenRefresh();
@@ -5151,7 +5156,8 @@ convert "
                 this.player.removeStatusAffect(StatusAffects.TemporaryHeat);
             }
             else {
-                this.dynStats("lus", (this.player.lib / 12 + 5 + this.rand(5)));
+                const lustIncrease = (this.player.lib / 12 + 5 + this.rand(5))
+                this.dynStats("lus", lustIncrease);
                 if (this.player.hasVagina()) {
                     this.outputText("Your " + this.vaginaDescript(0) + " clenches with an instinctual desire to be touched and filled.  ", false);
                 }
@@ -5161,7 +5167,7 @@ convert "
                 if (this.player.gender == 0) {
                     this.outputText("You feel a tingle in your " + this.assholeDescript() + ", and the need to touch and fill it nearly overwhelms you.  ", false);
                 }
-                this.outputText("If you don't finish this soon you'll give in to this potent drug!\n\n", false);
+                this.outputText(`If you don't finish this soon you'll give in to this potent drug! (${lustIncrease})\n\n`, false);
             }
         }
         //Poison
@@ -5257,6 +5263,7 @@ convert "
         //Flag the game as being "in combat"
         this.inCombat = true;
         this.monster = monster_;
+        this.mainView.monsterView.setMonster(this.monster);
         if (this.monster.short == "Ember") {
             this.monster.pronoun1 = this.emberScene.emberMF("he", "she");
             this.monster.pronoun2 = this.emberScene.emberMF("him", "her");
@@ -5278,6 +5285,7 @@ convert "
         //Flag the game as being "in combat"
         this.inCombat = true;
         this.monster = monster_;
+        this.mainView.monsterView.setMonster(this.monster);
         if (this.monster.short == "Ember") {
             this.monster.pronoun1 = this.emberScene.emberMF("he", "she");
             this.monster.pronoun2 = this.emberScene.emberMF("him", "her");
@@ -11190,6 +11198,12 @@ We can also do * italic * and ** bold ** text!
     //Used to update the display of statistics
     public statScreenRefresh(): void {
         this.mainView.statsView.show(); // show() method refreshes.
+        
+        if (this.inCombat) {
+            this.mainView.showMonsterView();
+        } else {
+            this.mainView.hideMonsterView();
+        }
     }
 
     public showStats(): void {

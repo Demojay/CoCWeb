@@ -101,7 +101,6 @@ body {
     text-align: right;
     font-weight: bold;
     height: 100%;
-    width: 40%;
     overflow: hidden;
 }
 
@@ -171,7 +170,6 @@ body {
     left: 20.5%;
     top: 6.5%;
     padding: 0% 1.5% 0% 0.8%;
-    overflow-y: auto;
 }
 
 #mainSpriteDisplay {
@@ -190,6 +188,46 @@ body {
     margin-block-start: 0.5em;
     display: inline-block;
     white-space: pre-wrap;
+    overflow-y: auto;
+    max-height: 95%;
+    max-width: 98%;
+}
+
+.reducedDisplay {
+    margin-bottom: 0;
+    height: 70%;
+}
+
+#monsterstatusPanel {
+    position: relative;
+    height: 28%;
+    width: 98%;
+    top: 0%;
+}
+
+.monsterPanel {
+    height: 100%;
+    width: 30%;
+}
+
+.monsterPanel .statPanel {
+    height: 25%;
+}
+
+.monsterPanel .statInfo {
+    font-size: 1.75em;
+}
+
+.monsterPanel .statCurrent {
+    font-size: 1.75em;
+}
+
+.hpBar {
+    background-color: #2dfc03;
+}
+
+.lustBar {
+    background-color: #fc03f8;
 }
 
 #bottomRowButtons {
@@ -222,6 +260,7 @@ body {
     background-repeat: no-repeat;
     background-size: contain;
     box-sizing: border-box;
+    z-index: 4;
 }
 
 .hidden {

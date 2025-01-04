@@ -4,6 +4,7 @@ import { singleArgConverters } from "./singleArgLookups";
 import { twoWordNumericTagsLookup, twoWordTagsLookup } from "./doubleArgLookups";
 import { Showdown } from "../../showdown/Showdown";
 import { bindToClass } from "../../ClassBinder";
+import { Utils } from "../internals/Utils";
 
 export class Parser {
 
@@ -85,7 +86,7 @@ export class Parser {
     // ALWAYS returns a string
     private convertSingleArg(arg: string): string {
         var argResult: string;
-        var capitalize: boolean = this.isUpperCase(arg.charAt(0));
+        var capitalize: boolean = Utils.isUpperCase(arg.charAt(0));
 
         var argLower: string;
         argLower = arg.toLowerCase()
@@ -96,7 +97,7 @@ export class Parser {
             if (this.lookupParserDebug) trace("WARNING: Called, return = ", argResult);
 
             if (capitalize)
-                argResult = this.capitalizeFirstWord(argResult);
+                argResult = Utils.capitalizeFirstWord(argResult);
 
             return argResult;
         }
@@ -165,7 +166,7 @@ export class Parser {
         if (this.lookupParserDebug) trace("WARNING: Doing lookup for subject", subject, " aspect ", aspect);
 
         // Figure out if we need to capitalize the resulting text
-        var capitalize: boolean = this.isUpperCase(aspect.charAt(0));
+        var capitalize: boolean = Utils.isUpperCase(aspect.charAt(0));
 
 
         // Only perform lookup in twoWordNumericTagsLookup if aspect can be cast to a valid number
@@ -176,7 +177,7 @@ export class Parser {
             if (this.lookupParserDebug) trace("WARNING: Found corresponding anonymous function");
             argResult = twoWordNumericTagsLookup[subjectLower](this._ownerClass, aspectLower);
             if (capitalize)
-                argResult = this.capitalizeFirstWord(argResult);
+                argResult = Utils.capitalizeFirstWord(argResult);
             if (this.lookupParserDebug) trace("WARNING: Called two word numeric lookup, return = ", argResult);
             return argResult;
         }
@@ -188,7 +189,7 @@ export class Parser {
                 if (this.lookupParserDebug) trace("WARNING: Found corresponding anonymous function");
                 argResult = twoWordTagsLookup[subjectLower][aspectLower](this._ownerClass);
                 if (capitalize)
-                    argResult = this.capitalizeFirstWord(argResult);
+                    argResult = Utils.capitalizeFirstWord(argResult);
                 if (this.lookupParserDebug) trace("WARNING: Called two word lookup, return = ", argResult);
                 return argResult;
             }
@@ -738,15 +739,15 @@ export class Parser {
         sceneName = textCtnt.substring(textCtnt.indexOf(' '), textCtnt.indexOf('|'));
         sceneCont = textCtnt.substr(textCtnt.indexOf('|') + 1);
 
-        sceneName = this.stripStr(sceneName);
+        sceneName = Utils.stripStr(sceneName);
         if (this.sceneParserDebug) trace("WARNING: Adding scene with name \"" + sceneName + "\"")
 
         // Cleanup the scene content from spurious leading and trailing space.
-        sceneCont = this.trimStr(sceneCont, "\n");
-        sceneCont = this.trimStr(sceneCont, "	");
+        sceneCont = Utils.trimStr(sceneCont, "\n");
+        sceneCont = Utils.trimStr(sceneCont, "	");
 
 
-        this.parserState[sceneName] = this.stripStr(sceneCont);
+        this.parserState[sceneName] = Utils.stripStr(sceneCont);
 
     }
 
@@ -767,8 +768,8 @@ export class Parser {
             throw new Error("Too many items in button")
         }
 
-        var buttonName: string = this.stripStr(arr[1]);
-        var buttonFunc: string = this.stripStr(arr[0].substring(arr[0].indexOf(' ')));
+        var buttonName: string = Utils.stripStr(arr[1]);
+        var buttonFunc: string = Utils.stripStr(arr[0].substring(arr[0].indexOf(' ')));
         //trace("WARNING: adding a button with name\"" + buttonName + "\" and function \"" + buttonFunc + "\"");
         this._ownerClass.addButton(this.buttonNum, buttonName, this.enterParserScene, buttonFunc);
         this.buttonNum += 1;
@@ -1053,60 +1054,4 @@ export class Parser {
             .replace(/--/g, "\u2014");		// em-dashes
         return inStr;
     }
-
-
-    // ---------------------------------------------------------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------------------------------------------------------
-
-    // Stupid string utility functions, because actionscript doesn't have them (WTF?)
-
-    public stripStr(str: string): string {
-        return this.trimStrBack(this.trimStrFront(str, " "), " ");
-        return this.trimStrBack(this.trimStrFront(str, "	"), "	");
-    }
-
-    public trimStr(str: string, char: string = " "): string {
-        return this.trimStrBack(this.trimStrFront(str, char), char);
-    }
-
-    public trimStrFront(str: string, char: string = " "): string {
-        char = this.stringToCharacter(char);
-        if (str.charAt(0) == char) {
-            str = this.trimStrFront(str.substring(1), char);
-        }
-        return str;
-    }
-
-    public trimStrBack(str: string, char: string = " "): string {
-        char = this.stringToCharacter(char);
-        if (str.charAt(str.length - 1) == char) {
-            str = this.trimStrBack(str.substring(0, str.length - 1), char);
-        }
-        return str;
-    }
-    public stringToCharacter(str: string): string {
-        if (str.length == 1) {
-            return str;
-        }
-        return str.slice(0, 1);
-    }
-
-
-    public isUpperCase(char: string): boolean {
-        if (!isNaN(Number(char))) {
-            return false;
-        }
-        else if (char == char.toUpperCase()) {
-            return true;
-        }
-        return false;
-    }
-
-    public capitalizeFirstWord(str: string): string {
-
-        str = str.charAt(0).toUpperCase() + str.slice(1);
-        return str;
-    }
-
 }

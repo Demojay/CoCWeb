@@ -100,6 +100,53 @@ export class Utils {
         return error;
     }
 
+    public static capitalizeFirstWord(str: string): string {
+
+        str = str.charAt(0).toUpperCase() + str.slice(1);
+        return str;
+    }
+
+    public static isUpperCase(char: string): boolean {
+        if (!isNaN(Number(char))) {
+            return false;
+        }
+        else if (char == char.toUpperCase()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static stringToCharacter(str: string): string {
+        if (str.length == 1) {
+            return str;
+        }
+        return str.slice(0, 1);
+    }
+
+    public static trimStrBack(str: string, char: string = " "): string {
+        char = Utils.stringToCharacter(char);
+        if (str.charAt(str.length - 1) == char) {
+            str = Utils.trimStrBack(str.substring(0, str.length - 1), char);
+        }
+        return str;
+    }
+
+    public static trimStrFront(str: string, char: string = " "): string {
+        char = Utils.stringToCharacter(char);
+        if (str.charAt(0) == char) {
+            str = Utils.trimStrFront(str.substring(1), char);
+        }
+        return str;
+    }
+
+    public static trimStr(str: string, char: string = " "): string {
+        return Utils.trimStrBack(Utils.trimStrFront(str, char), char);
+    }
+    
+    public static stripStr(str: string): string {
+        return Utils.trimStrBack(Utils.trimStrFront(str, " "), " ");
+    }
+
     /* None of these functions are called anymore
     // lazy(obj,arg1,...,argN)() = obj[arg1]...[argN]
     public static  lazyIndex(obj: any,...args){

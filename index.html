@@ -39,7 +39,7 @@
                 </td>
             </tr>
         </table>
-        <div id="statsPanel">
+        <div id="statsPanel" class="hidden">
             <h2 id="nameDisplay">Name: </h2>
             <h2>Core Stats</h2>
             <div id="strengthPanel" class="statPanel">
@@ -138,7 +138,7 @@
                 <div class="statStatus">
                     <div class="statInfo">
                         <div class="statName">HP</div>
-                        <div class="statBar"></div>
+                        <div class="statBar hpBar"></div>
                     </div>
                     <div class="statNumbers">
                         <span class="statCurrent">100</span>
@@ -151,7 +151,7 @@
                 <div class="statStatus">
                     <div class="statInfo">
                         <div class="statName">Lust</div>
-                        <div class="statBar"></div>
+                        <div class="statBar lustBar"></div>
                     </div>
                     <div class="statNumbers">
                         <span class="statCurrent">100</span>
@@ -186,10 +186,11 @@
                 <img class="arrowIcon arrowUp" src="res/ui/arrowup.png" />
                 <img class="arrowIcon arrowDown" src="res/ui/arrowdown.png" />
             </div>
-            <div id="xpPanel" class="statPanel noBar">
+            <div id="xpPanel" class="statPanel">
                 <div class="statStatus">
                     <div class="statInfo">
                         <div class="statName">Experience</div>
+                        <div class="statBar"></div>
                     </div>
                     <div class="statNumbers">
                         <span class="statCurrent">100</span>
@@ -218,6 +219,51 @@
         <div id="mainDisplay">
             <img class="mainImageDisplay" />
             <p id="mainTextDisplay"></p>
+            <!--TODO:Add Div here to hold monster details DIV-->
+            <div id="monsterstatusPanel" class="hidden">
+                <div class="monsterPanel">
+                    <h2 id="monsterNameDisplay">Name: </h2>
+                    <div id="monsterhpPanel" class="statPanel">
+                        <div class="statStatus">
+                            <div class="statInfo">
+                                <div class="statName">HP</div>
+                                <div class="statBar hpBar"></div>
+                            </div>
+                            <div class="statNumbers">
+                                <span class="statCurrent">100</span>
+                            </div>
+                        </div>
+                        <img class="arrowIcon arrowUp" src="res/ui/arrowup.png" />
+                        <img class="arrowIcon arrowDown" src="res/ui/arrowdown.png" />
+                    </div>
+                    <div id="monsterLustPanel" class="statPanel">
+                        <div class="statStatus">
+                            <div class="statInfo">
+                                <div class="statName">Lust</div>
+                                <div class="statBar lustBar"></div>
+                            </div>
+                            <div class="statNumbers">
+                                <span class="statCurrent">100</span>
+                            </div>
+                        </div>
+                        <img class="arrowIcon arrowUp" src="res/ui/arrowup.png" />
+                        <img class="arrowIcon arrowDown" src="res/ui/arrowdown.png" />
+                    </div>
+                    <div id="monsterFatiguePanel" class="statPanel">
+                        <div class="statStatus">
+                            <div class="statInfo">
+                                <div class="statName">Fatigue</div>
+                                <div class="statBar"></div>
+                            </div>
+                            <div class="statNumbers">
+                                <span class="statCurrent">100</span>
+                            </div>
+                        </div>
+                        <img class="arrowIcon arrowUp" src="res/ui/arrowup.png" />
+                        <img class="arrowIcon arrowDown" src="res/ui/arrowdown.png" />
+                    </div>
+                </div>
+            </div>
         </div>
         <img id="mainSpriteDisplay" />
         <div id="bottomRowButtons">

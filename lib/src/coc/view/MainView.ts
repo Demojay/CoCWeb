@@ -6,6 +6,7 @@ import { kFLAGS } from "../../../../classes/classes/GlobalFlags/kFLAGS";
 import { loadId } from "./LoadUtils";
 import { Sprites } from "../../../../classes/Sprites";
 import { bindToClass } from "../../../../classes/ClassBinder";
+import { MonsterView } from "./MonsterView";
 
 /****
 	coc.view.MainView
@@ -46,6 +47,7 @@ export class MainView {
     private sprite: HTMLImageElement;
 
     public statsView: StatsView;
+    public monsterView: MonsterView
 
     protected allButtons: CoCButton[];
 
@@ -68,6 +70,9 @@ export class MainView {
         this.mainText = loadId('mainTextDisplay');
         this.sprite = loadId('mainSpriteDisplay') as HTMLImageElement;
 
+        this.monsterView = new MonsterView(this.model);
+        this.hideMonsterView();
+
         // Top button init
         this.newGameButton = new CoCButton(loadId('buttontop0'));
         this.dataButton = new CoCButton(loadId('buttontop1'));
@@ -80,7 +85,18 @@ export class MainView {
         for (let index = 0; index < MainView.BOTTOM_BUTTON_COUNT; index++) {
             this.bottomButtons.push(new CoCButton(loadId('button' + index)));
         }
-    };
+    }
+    
+    public hideMonsterView() {
+        this.monsterView.hide();
+        this.mainText.classList.remove("reducedDisplay");
+    }
+
+    public showMonsterView() {
+        this.monsterView.show();
+        this.mainText.classList.add("reducedDisplay");
+    }
+;
 
     //////// Internal(?) view update methods ////////
 

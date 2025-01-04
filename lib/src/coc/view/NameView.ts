@@ -1,3 +1,4 @@
+import { Utils } from "../../../../classes/classes/internals/Utils";
 import { loadId } from "./LoadUtils";
 
 export class NameView {
@@ -7,6 +8,6 @@ export class NameView {
     }
 
     public setText(text: string) {
-        this.element.textContent = 'Name: ' + text;
+        this.element.textContent = 'Name: ' + Utils.capitalizeFirstWord(text);
     }
 }
