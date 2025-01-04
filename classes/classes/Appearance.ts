@@ -2669,7 +2669,7 @@ export class Appearance extends Utils {
                 if (horseCocks == 2) descript += ", " + Appearance.cockNoun(CockTypesEnum.HORSE) + "s";
                 if (dogCocks == 2) descript += ", " + Appearance.cockNoun(CockTypesEnum.DOG) + "s";
                 //Failsafe
-                if (creature.cocks[0].cockType.Index > 2) descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";
+                if (creature.cocks[0].cockType > 2) descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";
             }
             //Nonidentical
             else {
@@ -2687,7 +2687,7 @@ export class Appearance extends Utils {
                 if (horseCocks == 3) descript += ", " + Appearance.cockNoun(CockTypesEnum.HORSE) + "s";
                 if (dogCocks == 3) descript += ", " + Appearance.cockNoun(CockTypesEnum.DOG) + "s";
                 //Tentacles
-                if (creature.cocks[0].cockType.Index > 2) descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";
+                if (creature.cocks[0].cockType > 2) descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";
             }
             else {
                 descript += Appearance.randomChoice("three ", "group of ");
@@ -2717,7 +2717,7 @@ export class Appearance extends Utils {
                     descript += Appearance.cockNoun(CockTypesEnum.HORSE) + "s";
                     descripted = true;
                 }
-                if (creature.cocks[0].cockType.Index > 2) {
+                if (creature.cocks[0].cockType > 2) {
                     descript += creature.cockAdjective() + ", ";
                     descript += Appearance.cockNoun(creature.cocks[0].cockType) + "s";
                     descripted = true;
@@ -2794,7 +2794,7 @@ export class Appearance extends Utils {
                 if (horseCocks == 2) descript += ", " + Appearance.cockNoun(CockTypesEnum.HORSE) + "s";
                 if (dogCocks == 2) descript += ", " + Appearance.cockNoun(CockTypesEnum.DOG) + "s";
                 //Tentacles
-                if (creature.cocks[0].cockType.Index > 2)
+                if (creature.cocks[0].cockType > 2)
                     descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";
             }
             //Nonidentical
@@ -2816,7 +2816,7 @@ export class Appearance extends Utils {
                 if (dogCocks == 3)
                     descript += ", " + Appearance.cockNoun(CockTypesEnum.DOG) + "s";
                 //Tentacles
-                if (creature.cocks[0].cockType.Index > 2) descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";   // Not sure what's going on here, referencing index *may* be a bug.
+                if (creature.cocks[0].cockType > 2) descript += ", " + Appearance.cockNoun(creature.cocks[0].cockType) + "s";   // Not sure what's going on here, referencing index *may* be a bug.
 
             }
             else {
@@ -2848,7 +2848,7 @@ export class Appearance extends Utils {
                     descripted = true;
                 }
                 //TODO More group cock type descriptions!
-                if (creature.cocks[0].cockType.Index > 2) {
+                if (creature.cocks[0].cockType > 2) {
                     descript += Appearance.cockAdjectives(averageLength, averageThickness, CockTypesEnum.HUMAN, creature) + ", ";
                     descript += Appearance.cockNoun(creature.cocks[0].cockType) + "s";
                     descripted = true;

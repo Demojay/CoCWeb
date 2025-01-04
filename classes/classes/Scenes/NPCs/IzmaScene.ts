@@ -963,7 +963,7 @@ export class IzmaScene extends NPCAwareContent implements TimeAwareInterface {
 
         this.outputText("You respond in kind, shedding your garments as her lips purse and her eyes roam up and down your form.  ", false);
         //Single Normal dicks
-        if (this.player.cockTotal() == 1 && this.player.cocks[0].cockType.Index < 9) {
+        if (this.player.cockTotal() == 1 && this.player.cocks[0].cockType < 9) {
             //[Human dick in slot 0]
             if (this.player.cocks[0].cockType == CockTypesEnum.HUMAN) this.outputText("Izma seems surprised to see your genitalia is similar to hers.  \"<i>Huh. Thought that every land-dweller usually bumbled into a dick transformation around here.</i>\"", false);
             //[Horse cock in slot 0] 

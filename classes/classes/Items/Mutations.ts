@@ -633,7 +633,7 @@ export class Mutations extends BaseContent {
 
             if (selectedCockValue != -1) {
                 //Text for humandicks or others
-                if (player.cocks[selectedCockValue].cockType == CockTypesEnum.HUMAN || player.cocks[selectedCockValue].cockType.Index > 2) this.outputText("\n\nYour " + this.cockDescript(selectedCockValue) + " begins to feel strange... you pull down your pants to take a look and see it darkening as you feel a tightness near the base where your skin seems to be bunching up.  A sheath begins forming around your cock's base, tightening and pulling your cock inside its depths.  A hot feeling envelops your member as it suddenly grows into a horse penis, dwarfing its old size.  The skin is mottled brown and black and feels more sensitive than normal.  Your hands are irresistibly drawn to it, and you jerk yourself off, splattering cum with intense force.", false);
+                if (player.cocks[selectedCockValue].cockType == CockTypesEnum.HUMAN || player.cocks[selectedCockValue].cockType > 2) this.outputText("\n\nYour " + this.cockDescript(selectedCockValue) + " begins to feel strange... you pull down your pants to take a look and see it darkening as you feel a tightness near the base where your skin seems to be bunching up.  A sheath begins forming around your cock's base, tightening and pulling your cock inside its depths.  A hot feeling envelops your member as it suddenly grows into a horse penis, dwarfing its old size.  The skin is mottled brown and black and feels more sensitive than normal.  Your hands are irresistibly drawn to it, and you jerk yourself off, splattering cum with intense force.", false);
                 //Text for dogdicks
                 if (player.cocks[selectedCockValue].cockType == CockTypesEnum.DOG) this.outputText("\n\nYour " + Appearance.cockNoun(CockTypesEnum.DOG) + " begins to feel odd...  You pull down your clothes to take a look and see it darkening.  You feel a growing tightness in the tip of your " + Appearance.cockNoun(CockTypesEnum.DOG) + " as it flattens, flaring outwards.  Your cock pushes out of your sheath, inch after inch of animal-flesh growing beyond its traditional size.  You notice your knot vanishing, the extra flesh pushing more fresh horsecock out from your sheath.  <b>Your hands are drawn to the strange new " + Appearance.cockNoun(CockTypesEnum.HORSE) + "</b>, and you jerk yourself off, splattering thick ropes of cum with intense force.", false);
                 player.cocks[selectedCockValue].cockType = CockTypesEnum.HORSE;
@@ -982,7 +982,7 @@ export class Mutations extends BaseContent {
                         temp3 = 1;
                         this.dynStats("lib", 5, "sen", 4, "lus", 35);
                     }
-                    if (player.cocks[0].cockType.Index > 4) {
+                    if (player.cocks[0].cockType > 4) {
                         this.outputText("\n\nYour " + this.cockDescript(0) + " begins to feel odd... you pull down your clothes to take a look and see it darkening.  You feel a growing tightness in the tip of your " + this.cockDescript(0) + " as it flattens, flaring outwards.  Your skin folds and bunches around the base, forming an animalistic sheath.  The slick inhuman texture you recently had fades, taking on a more leathery texture.  Your hands are drawn to the strange new " + Appearance.cockNoun(CockTypesEnum.HORSE) + ", and you jerk yourself off, splattering thick ropes of cum with intense force.", false);
                         temp = player.addHorseCock();
                         temp2 = player.cocks[temp](Mutations.rand(4) + 4);
@@ -1820,7 +1820,7 @@ export class Mutations extends BaseContent {
                     this.dynStats("sen", 4, "lus", 5 * crit);
                 }
                 //Misc
-                if (player.cocks[temp3].cockType.Index > 4) {
+                if (player.cocks[temp3].cockType > 4) {
                     this.outputText("\n\nYour " + this.cockDescript(temp3) + " trembles, reshaping itself into a shiny red doggie-dick with a fat knot at the base.  <b>You now have a dog-cock.</b>", false);
                     this.dynStats("sen", 4, "lus", 5 * crit);
                 }

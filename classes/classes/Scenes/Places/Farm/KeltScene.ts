@@ -185,7 +185,7 @@ STATUSES:
             //(Horse Cock: 
             if (this.player.cocks[0].cockType == CockTypesEnum.HORSE) this.outputText("\"<i>Now that's just sad.  Getting a little envious of me, huh?  Had to go out and get a nice horsecock all your own?  Should have asked.  I'd have given you a taste of mine!  ", false);
             //(Tentacle Cock or other weirdness
-            if (this.player.cocks[0].cockType.Index >= 3) this.outputText("\"<i>Hah!  I'll bite... what the fuck are you supposed to be?  That a cock, or just an ugly, misplaced tail?  HA!  ", false);
+            if (this.player.cocks[0].cockType >= 3) this.outputText("\"<i>Hah!  I'll bite... what the fuck are you supposed to be?  That a cock, or just an ugly, misplaced tail?  HA!  ", false);
             //(Small Size, ?-10 inches:
             if (this.player.cocks[0].cockLength <= 10) this.outputText("\"So, when you poke a woman with that, does she notice?  Or do you have to tell her when to start faking her orgasm?</i>\"\r\r", false);
             //(Medium Size, 11-20 inches: 
@@ -241,7 +241,7 @@ STATUSES:
             //(Horse Cock: 
             if (this.player.cocks[0].cockType == CockTypesEnum.HORSE) this.outputText("\"<i>Now that's just sad.  Getting a little envious of me, huh?  Had to go out and get a nice horsecock all your own?  Should have asked.  I'd have given you a taste of mine!  ", false);
             //(Tentacle Cock or other weirdness
-            if (this.player.cocks[0].cockType.Index >= 3) this.outputText("\"<i>Hah!  I'll bite... what the fuck are you supposed to be?  That a cock, or just an ugly, misplaced tail?  HA!  ", false);
+            if (this.player.cocks[0].cockType >= 3) this.outputText("\"<i>Hah!  I'll bite... what the fuck are you supposed to be?  That a cock, or just an ugly, misplaced tail?  HA!  ", false);
             //(Small Size, ?-10 inches:
             if (this.player.cocks[0].cockLength <= 10) this.outputText("\"So, when you poke a woman with that, does she notice?  Or do you have to tell her when to start faking her orgasm?</i>\"\r\r", false);
             //(Medium Size, 11-20 inches: 

@@ -17441,7 +17441,7 @@ We can also do * italic * and ** bold ** text!
             this.outputText("You don't waste any time, gripping your " + this.cockDescript(0) + " in one hand and ", false);
             if (this.player.cocks[0].cockType == CockTypesEnum.HORSE) this.outputText("pressing your thick flare ", false);
             if (this.player.cocks[0].cockType == CockTypesEnum.DOG) this.outputText("pressing your pointed tip ", false);
-            if (this.player.cocks[0].cockType == CockTypesEnum.HUMAN || this.player.cocks[0].cockType.Index > 2) this.outputText("pressing your head ", false);
+            if (this.player.cocks[0].cockType == CockTypesEnum.HUMAN || this.player.cocks[0].cockType > 2) this.outputText("pressing your head ", false);
             this.outputText("between the incubus' cheeks towards his inhumanly smooth rear-passage.  You gasp in delight at the tight ribbed texture of his asshole as you slide ", false);
             if (this.player.cocks[0].cockLength > 10) this.outputText("deep inside ", false);
             else this.outputText("inside ", false);

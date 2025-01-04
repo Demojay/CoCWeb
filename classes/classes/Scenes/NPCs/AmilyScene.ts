@@ -1971,7 +1971,7 @@ export class AmilyScene extends NPCAwareContent implements TimeAwareInterface {
 
         //(If player has penis 14 inches or more long)
         if (this.player.cocks[0].cockLength >= 14) {
-            if (this.player.cocks[0].cockType == CockTypesEnum.HUMAN || this.player.cocks[0].cockType.Index > 3) {
+            if (this.player.cocks[0].cockType == CockTypesEnum.HUMAN || this.player.cocks[0].cockType > 3) {
                 this.outputText("Her eyes go wide with shock and fear as you reveal your impressively sized member, already growing erect and hard. \"<i>You can't stick that in me! It'll never fit!</i>\" She squeals.\n\n", false);
                 this.outputText("\"<i>I'll make it fit!</i>\" You assure her.\n\n", false);
             }

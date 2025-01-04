@@ -1631,7 +1631,7 @@ export class Creature extends Utils {
                 return counter;
             }
             //Catch-all
-            if (this.cocks[counter].cockType.Index > 4) {
+            if (this.cocks[counter].cockType > 4) {
                 this.cocks[counter].cockType = CockTypesEnum.HORSE;
                 return counter;
             }
@@ -2209,7 +2209,7 @@ export class Creature extends Utils {
     // public fixFuckingCockTypesEnum(): void {
     //     if (this.cocks.length > 0) {
     //         for (var i: number = 0; i < this.cocks.length; i++) {
-    //             this.cocks[i].cockType = CockTypesEnum.ParseConstantByIndex(this.cocks[i].cockType.Index);
+    //             this.cocks[i].cockType = CockTypesEnum.ParseConstantByIndex(this.cocks[i].cockType);
     //         }
     //     }
     // }

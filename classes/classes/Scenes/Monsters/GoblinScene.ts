@@ -533,7 +533,7 @@ export class GoblinScene extends BaseContent {
             this.outputText("You start walking, letting your movements work with gravity, allowing you to penetrate her with little difficulty. Those puffy wet walls clench you tightly as she slides down, ", false);
             if (this.player.cocks[0].cockType == CockTypesEnum.DEMON) this.outputText("rubbing painfully against your demonic nubs", false);
             else if (this.player.hasKnot(0)) this.outputText("stretching painfully around your knot", false);
-            else if (this.player.cocks[0].cockType == CockTypesEnum.HORSE || this.player.cocks[0].cockType.Index > 3) this.outputText("feeling painfully tight around you", false);
+            else if (this.player.cocks[0].cockType == CockTypesEnum.HORSE || this.player.cocks[0].cockType > 3) this.outputText("feeling painfully tight around you", false);
             this.outputText(". With each and every step she slides down further, stretching her to capacity, until she sits almost completely impaled on you, grabbing your ", false);
             if (this.player.biggestTitSize() >= 1) this.outputText(this.player.allBreastsDescript(), false);
             else this.outputText("torso", false);
@@ -565,7 +565,7 @@ export class GoblinScene extends BaseContent {
             this.outputText("You start walking, letting the movements work with gravity to allow you to effortlessly penetrate her.  Those puffy wet walls clench you tightly as she slides down ", false);
             if (this.player.cocks[0].cockType == CockTypesEnum.DEMON) this.outputText("rubbing perfectly against your demonic nubs", false);
             else if (this.player.hasKnot(0)) this.outputText("stretching tightly around your knot", false);
-            else if (this.player.cocks[0].cockType == CockTypesEnum.HORSE || this.player.cocks[0].cockType.Index > 3) this.outputText("feeling absolutely perfect around you", false);
+            else if (this.player.cocks[0].cockType == CockTypesEnum.HORSE || this.player.cocks[0].cockType > 3) this.outputText("feeling absolutely perfect around you", false);
             this.outputText(".  With each and every step you take, she slides down further, until she sits fully impaled on you, grabbing your ", false);
             if (this.player.biggestTitSize() >= 1) this.outputText(this.player.allBreastsDescript(), false);
             else this.outputText("torso", false);
