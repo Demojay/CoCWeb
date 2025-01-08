@@ -2573,6 +2573,8 @@ export class CoC {
             "", undefined,
             "Settings", this.settingsScreen,
             "Resume", resume);
+        
+        this.hideStats();
 
         // if (false)  // Conditionally jump into chaosmonkey IMMEDIATELY
         // {
@@ -3324,22 +3326,26 @@ convert "
     // include "../../includes/combat.as";
 
     public endHpVictory(): void {
-        this.mainView.monsterView.hide();
+        //Hide monster details during defeat/victory scenes
+        this.mainView.monsterView.showView = false;
         this.monster.defeated_(true);
     }
 
     public endLustVictory(): void {
-        this.mainView.monsterView.hide();
+        //Hide monster details during defeat/victory scenes
+        this.mainView.monsterView.showView = false;
         this.monster.defeated_(false);
     }
 
     public endHpLoss(): void {
-        this.mainView.monsterView.hide();
+        //Hide monster details during defeat/victory scenes
+        this.mainView.monsterView.showView = false;
         this.monster.won_(true, false);
     }
 
     public endLustLoss(): void {
-        this.mainView.monsterView.hide();
+        //Hide monster details during defeat/victory scenes
+        this.mainView.monsterView.showView = false;
         if (this.player.findStatusAffect(StatusAffects.Infested) >= 0 && this.flags[kFLAGS.CAME_WORMS_AFTER_COMBAT] == 0) {
             this.flags[kFLAGS.CAME_WORMS_AFTER_COMBAT] = 1;
             this.infestOrgasm();
@@ -5264,6 +5270,7 @@ convert "
         this.inCombat = true;
         this.monster = monster_;
         this.mainView.monsterView.setMonster(this.monster);
+        this.mainView.monsterView.showView = true;
         if (this.monster.short == "Ember") {
             this.monster.pronoun1 = this.emberScene.emberMF("he", "she");
             this.monster.pronoun2 = this.emberScene.emberMF("him", "her");
@@ -5286,6 +5293,7 @@ convert "
         this.inCombat = true;
         this.monster = monster_;
         this.mainView.monsterView.setMonster(this.monster);
+        this.mainView.monsterView.showView = true;
         if (this.monster.short == "Ember") {
             this.monster.pronoun1 = this.emberScene.emberMF("he", "she");
             this.monster.pronoun2 = this.emberScene.emberMF("him", "her");
@@ -10851,6 +10859,7 @@ We can also do * italic * and ** bold ** text!
         this.mainView.hideBottomButton(8);
         this.mainView.hideBottomButton(9);
         this.flushOutputTextToGUI();
+        this.statScreenRefresh();
     }
 
     /*
@@ -11197,9 +11206,13 @@ We can also do * italic * and ** bold ** text!
 
     //Used to update the display of statistics
     public statScreenRefresh(): void {
+
+        //Prevent stats from showing on the main menu
+        if (this.player.slotName == "VOID") return;
+
         this.mainView.statsView.show(); // show() method refreshes.
         
-        if (this.inCombat) {
+        if (this.inCombat && this.mainView.monsterView.showView) {
             this.mainView.showMonsterView();
         } else {
             this.mainView.hideMonsterView();

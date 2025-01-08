@@ -208,6 +208,8 @@ body {
 .monsterPanel {
     height: 100%;
     width: 30%;
+    border: 2px solid black;
+    border-radius: 5px;
 }
 
 .monsterPanel .statPanel {
@@ -265,6 +267,10 @@ body {
 
 .hidden {
     display: none;
+}
+
+.dim {
+    opacity: 0.4;
 }
 
 .controlButton>.button {

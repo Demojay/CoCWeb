@@ -15,7 +15,10 @@ export class MonsterView {
 
     private stats = {} as Record<StatKeys, StatViewWithBar> & Record<OtherKeys, StatView>;
 
-    private oldStats = {} as Record<"hp" | "lust" | "fatigue", number>
+    private oldStats = {} as Record<"hp" | "lust" | "fatigue", number>;
+
+    //Override variable that is used to make sure monster view is still hidden in defeat/victory scenes, even when still technically in combat
+    public showView:Boolean = true;
     
 
     public constructor(model: GameModel) {
@@ -34,8 +37,16 @@ export class MonsterView {
     }
 
     public hide() {
-        this.element.classList.add("hidden");
         this.hideArrows();
+        this.element.classList.add("hidden");
+    }
+
+    public dim() {
+        this.element.classList.add("dim");
+    }
+    
+    public brighten() {
+        this.element.classList.remove("dim");
     }
 
     public setMonster(monster: Monster) {
@@ -84,19 +95,30 @@ export class MonsterView {
                 this.stats.fatigue.showUp();
             }
 
-            this.stats.hp.setMaxNumber(this.monster.eMaxHP());
-            this.stats.lust.setMaxNumber(100);
-            this.stats.fatigue.setMaxNumber(100);
+            const maxHP = this.monster.eMaxHP();
+            const maxLust = 100;
+            const maxFatique = 100;
+
+            this.stats.hp.setMaxNumber(maxHP);
+            this.stats.lust.setMaxNumber(maxLust);
+            this.stats.fatigue.setMaxNumber(maxFatique);
 
             this.stats.hp.setNumber(this.monster.HP);
             this.stats.lust.setNumber(this.monster.lust);
             this.stats.fatigue.setNumber(this.monster.fatigue);
 
             this.stats.hp.setBar(this.monster.HPRatio());
-            this.stats.lust.setBar(this.monster.lust / 100);
-            this.stats.fatigue.setBar(this.monster.fatigue / 100);
+            this.stats.lust.setBar(this.monster.lust / maxLust);
+            this.stats.fatigue.setBar(this.monster.fatigue / maxFatique);
 
             this.resetOldStats();
+
+            //Dim/Brighten monster details depending on whether the enemy has been defeated yet
+            if ((this.monster.HP <= 0) || (this.monster.lust >= maxLust)) {
+                this.dim();
+            } else {
+                this.brighten();
+            }
 
         }
 
