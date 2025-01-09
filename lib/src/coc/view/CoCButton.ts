@@ -3,6 +3,8 @@ import { loadClass } from "./LoadUtils";
 export class CoCButton {
     private button: HTMLElement;
     private tooltip?: HTMLElement;
+    private _toolTipText: string;
+    private _toolTipHeader: string;
 
     protected _callback?: () => void;
 
@@ -11,6 +13,8 @@ export class CoCButton {
     ) {
         this.button = loadClass('button', element);
         this.tooltip = element.getElementsByClassName('tooltip')[0] as HTMLElement;
+        this._toolTipText = '';
+        this._toolTipHeader = '';
 
         this.button.addEventListener('mouseover', () => {
             if (this.toolTipText && this.tooltip)
@@ -32,18 +36,40 @@ export class CoCButton {
         this.button.click();
     }
 
+    private createToolTip() {
+        if (this.tooltip) {
+            let text = '';
+
+            if (this._toolTipHeader) {
+                text = `<span class="toolTipHeader">${this._toolTipHeader}</span><hr>`;
+            }
+
+            if (this._toolTipText) {
+                text += this._toolTipText;
+            }
+
+            this.tooltip.innerHTML = text;
+        }
+    }
+
     //////// Getters and Setters ////////
 
     public get toolTipText() {
-        if (this.tooltip)
-            return this.tooltip.innerHTML || '';
-        else
-            return '';
+        return this._toolTipText;
     }
 
     public set toolTipText(text) {
-        if (this.tooltip)
-            this.tooltip.innerHTML = text;
+        this._toolTipText = text;
+        this.createToolTip();
+    }
+
+    public get toolTipHeader() {
+        return this._toolTipHeader;
+    }
+
+    public set toolTipHeader(text) {
+        this._toolTipHeader = text;
+        this.createToolTip();
     }
 
     public get labelText() {
@@ -71,6 +97,24 @@ export class CoCButton {
             this.button.classList.remove('hidden');
         else
             this.button.classList.add('hidden');
+    }
+
+    public get disabled() {
+        if (this.element instanceof HTMLButtonElement) {
+            return (this.element as HTMLButtonElement).disabled;
+        }
+        return false;
+    }
+
+    public set disabled(value: boolean) {
+       if (this.element instanceof HTMLButtonElement) {
+        if (value) {
+            this.element.classList.add("disabled");
+        } else {
+            this.element.classList.remove("disabled");
+        }
+        (this.element as HTMLButtonElement).disabled = value;
+       } 
     }
 
 }

@@ -10712,6 +10712,24 @@ We can also do * italic * and ** bold ** text!
         return toolTipText;
     }
 
+    //Fallback method for generated Tooltip headers 
+    public getButtonToolTipHeaderText(buttonText: string): string {
+        let toolTipHeader = "";
+        buttonText = buttonText || "";
+
+        // Extracts true names of items passed in the format <item name> x<item quantity>
+        if (buttonText.indexOf(" x") != -1) {
+            buttonText = buttonText.split(" x")[0];
+        }
+
+        let itype: ItemType = ItemType.lookupItem(buttonText);
+        if (itype != undefined) toolTipHeader = Utils.capitalizeFirstWord(itype.longName);
+        itype = ItemType.lookupItemByShort(buttonText);
+        if (itype != undefined) toolTipHeader = Utils.capitalizeFirstWord(itype.longName);
+
+        return toolTipHeader;
+    }
+
 
     // Hah, finally a place where a dictionary is actually required!
     // private funcLookups: Dictionary = undefined;
@@ -10806,22 +10824,27 @@ We can also do * italic * and ** bold ** text!
     }
 
 
-    public addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000): void {
+    public addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
         // if (func1 == undefined) return;
-        var callback;
-        var toolTipText: string;
+        //
         /* Let the mainView decide if index is valid
             if(pos > 9) {
                 trace("INVALID BUTTON");
                 return;
             }
         */
+        let callback;
+
         if (func1)
             callback = this.createCallBackFunction(func1, arg1);
 
+        if (!toolTipText)
+            toolTipText = this.getButtonToolTipText(text);
 
-        toolTipText = this.getButtonToolTipText(text);
-        this.mainView.showBottomButton(pos, text, callback, toolTipText);
+        if (!toolTipHeader)
+            toolTipHeader = this.getButtonToolTipHeaderText(text);
+
+        this.mainView.showBottomButton(pos, text, callback, toolTipText, toolTipHeader);
         //mainView.setOutputText( currentText );
         this.flushOutputTextToGUI();
     }
