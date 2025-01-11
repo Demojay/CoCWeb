@@ -30,7 +30,7 @@ export class MainView {
     public static MENU_PERKS: string = 'perks';
     public static MENU_APPEARANCE: string = 'appearance';
 
-    private static BOTTOM_BUTTON_COUNT: number = 10;
+    private static _BOTTOM_BUTTON_COUNT: number = 15;
     private static TOP_BUTTON_COUNT: number = 6;
     // private static BOTTOM_BUTTON_PER_ROW_COUNT: number = 5;
 
@@ -82,7 +82,7 @@ export class MainView {
         this.appearanceButton = new CoCButton(loadId('buttontop5'));
 
         // Bottom button init
-        for (let index = 0; index < MainView.BOTTOM_BUTTON_COUNT; index++) {
+        for (let index = 0; index < MainView._BOTTOM_BUTTON_COUNT; index++) {
             this.bottomButtons.push(new CoCButton(loadId('button' + index)));
         }
     }
@@ -128,7 +128,7 @@ export class MainView {
 
     // TODO: Refactor button set-up code to use callback and toolTipViewText here.
     public setButton(index: number, label: string = '', callback?: any, toolTipViewText: string = '') {
-        if (index < 0 || index >= MainView.BOTTOM_BUTTON_COUNT) {
+        if (index < 0 || index >= MainView._BOTTOM_BUTTON_COUNT) {
             trace("MainView.setButton called with out of range index:", index);
             // throw new RangeError();
             return;
@@ -145,7 +145,7 @@ export class MainView {
     public clearBottomButtons(): void {
         var i: number;
 
-        for (i = 0; i < MainView.BOTTOM_BUTTON_COUNT; ++i) {
+        for (i = 0; i < MainView._BOTTOM_BUTTON_COUNT; ++i) {
             this.setButton(i);
         }
     };
@@ -267,4 +267,8 @@ export class MainView {
     public hideSprite(): void {
         this.selectSprite(-1);
     };
+
+    public static get BOTTOM_BUTTON_COUNT() {
+        return this._BOTTOM_BUTTON_COUNT;
+    }
 }

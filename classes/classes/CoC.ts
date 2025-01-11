@@ -812,6 +812,51 @@ export class CoC {
                     this.mainView.bottomButtons[9].click();
                 }
             });
+        
+        this.inputManager.AddBindableControl(
+            "Button 11",
+            "Activate button 11",
+            () => {
+                if (this.mainView.bottomButtons[10].visible) {
+                    this.mainView.bottomButtons[10].click();
+                }
+            });
+        
+        this.inputManager.AddBindableControl(
+            "Button 12",
+            "Activate button 12",
+            () => {
+                if (this.mainView.bottomButtons[11].visible) {
+                    this.mainView.bottomButtons[11].click();
+                }
+            });
+        
+        this.inputManager.AddBindableControl(
+            "Button 13",
+            "Activate button 13",
+            () => {
+                if (this.mainView.bottomButtons[12].visible) {
+                    this.mainView.bottomButtons[12].click();
+                }
+            });
+        
+        this.inputManager.AddBindableControl(
+            "Button 14",
+            "Activate button 14",
+            () => {
+                if (this.mainView.bottomButtons[13].visible) {
+                    this.mainView.bottomButtons[13].click();
+                }
+            });
+        
+        this.inputManager.AddBindableControl(
+            "Button 15",
+            "Activate button 15",
+            () => {
+                if (this.mainView.bottomButtons[14].visible) {
+                    this.mainView.bottomButtons[14].click();
+                }
+            });
 
         this.inputManager.AddBindableControl(
             "Cheat! Give Hummus",
@@ -886,11 +931,11 @@ export class CoC {
         this.inputManager.BindKeyToControl(56, "Button 8");
         this.inputManager.BindKeyToControl(57, "Button 9");
         this.inputManager.BindKeyToControl(48, "Button 10");
-        this.inputManager.BindKeyToControl(81, "Button 6", InputManager.SECONDARYKEY);
-        this.inputManager.BindKeyToControl(87, "Button 7", InputManager.SECONDARYKEY);
-        this.inputManager.BindKeyToControl(69, "Button 8", InputManager.SECONDARYKEY);
-        this.inputManager.BindKeyToControl(82, "Button 9", InputManager.SECONDARYKEY);
-        this.inputManager.BindKeyToControl(84, "Button 10", InputManager.SECONDARYKEY);
+        this.inputManager.BindKeyToControl(81, "Button 11");
+        this.inputManager.BindKeyToControl(87, "Button 12");
+        this.inputManager.BindKeyToControl(69, "Button 13");
+        this.inputManager.BindKeyToControl(82, "Button 14");
+        this.inputManager.BindKeyToControl(84, "Button 15");
 
         this.inputManager.RegisterDefaults();
 
@@ -2945,7 +2990,7 @@ Also go play <u><a href='http://www.furaffinity.net/view/9830293/'> Nimin </a></
         this.outputText("<b><u>How To Play:</u></b>\nClick the buttons corresponding to the actions you want to take.  Your 'goal' is to obviously put an end to the demonic corruption around you, but do whatever the hell you want.  There is a story but sometimes it's fun to ignore it.\n\n", false);
         this.outputText("<b>Exploration:</b>\nThe lake is a safe zone when you start the game.  It's a good place to explore, and Whitney's farm can offer some nice stat boosts to help get you on your feet. Once you feel comfortable, the forest is probably the next safest area, but beware of tentacle monsters.  The desert is the next toughest area, and the mountains offer further challenges.  There are more areas beyond that, but that's a good way to get started.  You'll uncover plenty of new 'places' exploring, which can be accessed from the <b>Places</b> menu.  You'll also find some interesting characters when you try to discover new explorable locations by choosing <b>Explore</b> twice.\n\n", false);
         this.outputText("<b>Combat:</b>\nCombat is won by raising an opponent's lust to 100 or taking their HP to 0.  You lose if your enemy does the same to you.  Loss isn't game over, but some losses will make it harder in the future by lowering your stats.  Beware.  Don't be afraid to spam the <b>Run</b> option when you're in over your head.\n\n", false);
-        this.outputText("<b>Controls:</b>\nThe game features numerous hot-keys to make playing quicker and easier.\nP key - Perks Menu\nD key - Data Menu\nA key - Appearance Screen\n1 Through 5 - The top row of 'choice' buttons.\n6 Through 0 - The bottom row of 'choice' buttons.\nQ through T - Alternative bottom 'choice' hotkeys.\nSpace Bar - Next/Back/Leave\nHome Key - Toggle text field background.\nS key - Stats Screen\n(Save Hotkeys - May not work in all players)\nF1-F5 - Quicksave to slot 1 through 5.  Only works when Data is visible.\nF6-F0 - Quick Load from slots 1-5.\n\n", false);
+        this.outputText("<b>Controls:</b>\nThe game features numerous hot-keys to make playing quicker and easier.\nP key - Perks Menu\nD key - Data Menu\nA key - Appearance Screen\n1 Through 5 - The top row of 'choice' buttons.\n6 Through 0 - The middle row of 'choice' buttons.\nQ through T - The bottom row of 'choice' buttons.\nSpace Bar - Next/Back/Leave\nHome Key - Toggle text field background.\nS key - Stats Screen\n(Save Hotkeys - May not work in all players)\nF1-F5 - Quicksave to slot 1 through 5.  Only works when Data is visible.\nF6-F0 - Quick Load from slots 1-5.\n\n", false);
         this.outputText("<b>Save often using the Data Menu</b> - you never know when your journey will come to an end!", false);
         this.doNext(this.mainMenu);
     }
@@ -10871,16 +10916,9 @@ We can also do * italic * and ** bold ** text!
     // }
 
     public menu(): void { //The newer, simpler menu - blanks all buttons so addButton can be used
-        this.mainView.hideBottomButton(0);
-        this.mainView.hideBottomButton(1);
-        this.mainView.hideBottomButton(2);
-        this.mainView.hideBottomButton(3);
-        this.mainView.hideBottomButton(4);
-        this.mainView.hideBottomButton(5);
-        this.mainView.hideBottomButton(6);
-        this.mainView.hideBottomButton(7);
-        this.mainView.hideBottomButton(8);
-        this.mainView.hideBottomButton(9);
+        for (let index = 0; index < MainView.BOTTOM_BUTTON_COUNT; index++) {
+            this.mainView.hideBottomButton(index);
+        }
         this.flushOutputTextToGUI();
         this.statScreenRefresh();
     }
@@ -10955,7 +10993,12 @@ We can also do * italic * and ** bold ** text!
         text7: string, butt7: any,
         text8: string, butt8: any,
         text9: string, butt9: any,
-        text0: string, butt0: any): void { //New typesafe version
+        text10: string, butt10: any,
+        text11?: string, butt11?: any,
+        text12?: string, butt12?: any,
+        text13?: string, butt13?: any,
+        text14?: string, butt14?: any,
+        text15?: string, butt15?: any): void { //New typesafe version
 
         this.menu();
         this.addButton(0, text1, butt1);
@@ -10967,7 +11010,12 @@ We can also do * italic * and ** bold ** text!
         this.addButton(6, text7, butt7);
         this.addButton(7, text8, butt8);
         this.addButton(8, text9, butt9);
-        this.addButton(9, text0, butt0);
+        this.addButton(9, text10, butt10);
+        if (text11 && butt11) this.addButton(10, text11, butt11);
+        if (text12 && butt12) this.addButton(11, text12, butt12);
+        if (text13 && butt13) this.addButton(12, text13, butt13);
+        if (text14 && butt14) this.addButton(13, text14, butt14);
+        if (text15 && butt15) this.addButton(14, text15, butt15);
         /*
         var  callback ;
         var  toolTipText : string;

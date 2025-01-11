@@ -44,7 +44,14 @@ body {
 .buttonRow1 {
     position: absolute;
     width: 100%;
-    top: 52%;
+    top: 33%;
+    table-layout: fixed;
+}
+
+.buttonRow2 {
+    position: absolute;
+    width: 100%;
+    top: 66%;
     table-layout: fixed;
 }
 
@@ -234,10 +241,10 @@ body {
 
 #bottomRowButtons {
     position: absolute;
-    bottom: 5%;
+    bottom: 0%;
     left: 20%;
     width: 80%;
-    height: 12%;
+    height: 18%;
 }
 
 .buttonContainer {
@@ -283,12 +290,14 @@ body {
 }
 
 #button3>.tooltip,
-#button8>.tooltip {
+#button8>.tooltip,
+#button13>.tooltip {
     left: -10%;
 }
 
 #button4>.tooltip,
-#button9>.tooltip {
+#button9>.tooltip,
+#button14>.tooltip {
     left: -110%;
 }
 
@@ -354,6 +363,26 @@ body {
 }
 
 #button9>.button {
+    background-image: url("res/ui/button8.jpg");
+}
+
+#button10>.button {
+    background-image: url("res/ui/button1.jpg");
+}
+
+#button11>.button {
+    background-image: url("res/ui/button4.jpg");
+}
+
+#button12>.button {
+    background-image: url("res/ui/button0.jpg");
+}
+
+#button13>.button {
+    background-image: url("res/ui/button7.jpg");
+}
+
+#button14>.button {
     background-image: url("res/ui/button8.jpg");
 }
 
