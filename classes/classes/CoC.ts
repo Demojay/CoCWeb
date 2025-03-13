@@ -10869,7 +10869,7 @@ We can also do * italic * and ** bold ** text!
     }
 
 
-    public addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
+    public addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
         // if (func1 == undefined) return;
         //
         /* Let the mainView decide if index is valid
@@ -10881,7 +10881,7 @@ We can also do * italic * and ** bold ** text!
         let callback;
 
         if (func1)
-            callback = this.createCallBackFunction(func1, arg1);
+            callback = this.createCallBackFunction2(func1, arg1, arg2, arg3);
 
         if (!toolTipText)
             toolTipText = this.getButtonToolTipText(text);

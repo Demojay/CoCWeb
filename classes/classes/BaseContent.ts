@@ -223,7 +223,12 @@ export class BaseContent extends Utils {
         text7: string, butt7: any,
         text8: string, butt8: any,
         text9: string, butt9: any,
-        text0: string, butt0: any): void { //Now typesafe
+        text10: string, butt10: any,
+        text11?: string, butt11?: any,
+        text12?: string, butt12?: any,
+        text13?: string, butt13?: any,
+        text14?: string, butt14?: any,
+        text15?: string, butt15?: any): void { //Now typesafe
         kGAMECLASS.choices(
             text1, butt1,
             text2, butt2,
@@ -234,7 +239,12 @@ export class BaseContent extends Utils {
             text7, butt7,
             text8, butt8,
             text9, butt9,
-            text0, butt0
+            text10, butt10,
+            text11, butt11,
+            text12, butt12,
+            text13, butt13,
+            text14, butt14,
+            text15, butt15,
         );
     }
 
@@ -254,8 +264,8 @@ export class BaseContent extends Utils {
         kGAMECLASS.doYesNo(eventYes, eventNo);
     }
 
-    protected addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000): void {
-        kGAMECLASS.addButton(pos, text, func1, arg1);
+    protected addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
+        kGAMECLASS.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
     }
 
     // protected hasButton(arg: any): boolean {
