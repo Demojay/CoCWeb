@@ -147,6 +147,10 @@ export class Utils {
         return Utils.trimStrBack(Utils.trimStrFront(str, " "), " ");
     }
 
+    public static boundInt(min:number, x:number, max:number):number {
+        return x < min ? min : x > max ? max : x;
+    }
+
     /* None of these functions are called anymore
     // lazy(obj,arg1,...,argN)() = obj[arg1]...[argN]
     public static  lazyIndex(obj: any,...args){

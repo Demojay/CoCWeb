@@ -93,8 +93,10 @@ export class CoCButton {
     }
 
     public set visible(vis) {
-        if (vis && this.labelText !== '' && this._callback !== undefined)
+        if (vis && this.labelText !== '') {
             this.button.classList.remove('hidden');
+            this.disabled = this.callback == undefined
+        }
         else
             this.button.classList.add('hidden');
     }
@@ -115,6 +117,24 @@ export class CoCButton {
         }
         (this.element as HTMLButtonElement).disabled = value;
        } 
+    }
+
+    //TODO: Add reset and methods from COCX
+    public show(label: string, callback?: any, toolTipViewText: string = '', toolTipHeader: string = ''):CoCButton {
+        this.labelText = label;
+        this.callback = callback? callback: undefined;
+        this.toolTipText = toolTipViewText;
+        this.toolTipHeader = toolTipHeader;
+        this.visible = true;
+        this.disabled = this.callback == undefined;
+        return this;
+    }
+
+    public disableIf(condition:Boolean):CoCButton {
+        if (condition)
+            this.disabled = true;
+
+        return this;
     }
 
 }

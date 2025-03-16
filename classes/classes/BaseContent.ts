@@ -17,6 +17,8 @@ import { kGAMECLASS } from "./GlobalFlags/kGAMECLASS";
 import { MainView } from "../../lib/src/coc/view/MainView";
 import { OtherKeys, StatKeys } from "../../lib/src/coc/view/StatsView";
 import { ASDate } from "./ASDate";
+import { ButtonData } from "../../lib/src/coc/view/ButtonData";
+import { ButtonDataList } from "../../lib/src/coc/view/ButtonDataList";
 
 /**
  * Quick hacky method to wrap new content in a class-based structure
@@ -266,6 +268,62 @@ export class BaseContent extends Utils {
 
     protected addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
         kGAMECLASS.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
+    }
+
+    public static submenuPage:number = 0;
+    /**
+     * Print a submenu from the provided buttons
+     * @param buttons List of buttons for the menu
+     * @param back Function for the "Back" button (14)
+     * @param page Currently displayed page
+     * @param IsSorted If true, the buttons will be sorted by their names
+     * @param constButtons Adds constant buttons, aside from Prev/Next page. Arrays ["Name", Function]
+     */
+    public static submenu(buttons:ButtonDataList, back?: () => void, page:number=0, IsSorted:Boolean = true, constButtons:ButtonDataList = new ButtonDataList()):void {
+        var list:Array<ButtonData> = buttons.list.filter((button: ButtonData) => button.visible);
+
+        const button = (index:number) => kGAMECLASS.mainView.bottomButtons[index];
+
+        if (IsSorted){
+            list.sort((button1, button2) => {
+                const button1Caps = button1.label.toUpperCase();
+                const button2Caps = button2.label.toUpperCase();
+
+                if (button1Caps < button2Caps) {
+                    return -1;
+                } else if (button1Caps > button2Caps) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+        }
+        // find out how much buttons we can place on each page
+        var total:number = list.length; // total number of menu buttons
+        var totalConst:number = constButtons.length + (back != null ? 1 : 0); // const buttons on each page
+        if (total + totalConst > 15) //can't fit on 1 page!
+            totalConst += 2; // prev/nex
+        var buttonsPerPage:number = 15 - totalConst; // including back, prev/next, other shit
+        var pageCount:number = Math.ceil(total / buttonsPerPage);
+        page = Utils.boundInt(0, page, pageCount);
+        BaseContent.submenuPage = page;
+        kGAMECLASS.menu();
+        // menu buttons
+        var n:number = Math.min(total,(page+1)*buttonsPerPage); // max index for this page
+        var bi:number = 0; // button index
+        for (var li:number=page*buttonsPerPage; li<n; li++,bi++) {
+            list[li].applyTo(button(bi%buttonsPerPage));
+        }
+        // const buttons
+        bi = 15 - totalConst;
+        for (var cbi:number = 0; cbi < constButtons.length; ++cbi, ++bi)
+            constButtons.get(cbi).applyTo(button(bi))            
+
+        if (page!=0 || total>buttonsPerPage) {
+            button(bi++).show("Prev Page", Utils.curry(BaseContent.submenu, buttons, back, page - 1, IsSorted, constButtons)).disableIf(page == 0);
+            button(bi++).show("Next Page", Utils.curry(BaseContent.submenu, buttons, back, page + 1, IsSorted, constButtons)).disableIf(n >= total);
+        }
+        if (back != null) button(bi++).show("Back", back);
     }
 
     // protected hasButton(arg: any): boolean {

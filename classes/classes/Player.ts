@@ -70,7 +70,7 @@ export class Player extends Character {
     public itemSlot3: ItemSlotClass;
     public itemSlot4: ItemSlotClass;
     public itemSlot5: ItemSlotClass;
-    public itemSlots: any[];
+    public itemSlots: ItemSlotClass[];
 
     private _armor: Armor = ArmorLib.COMFORTABLE_UNDERCLOTHES;
     private _modArmorName: string = "";
@@ -1705,9 +1705,13 @@ export class Player extends Character {
             return false;
         }
         //From here we can be sure the player has enough of the item in inventory
-        var slot: ItemSlotClass;
+        var slot: ItemSlotClass | undefined;
         while (amount > 0) {
             slot = this.getLowestSlot(itype); //Always draw from the least filled slots first
+            
+            if (!slot) { //Fails if there are no longer any of the item left to consume
+                return false;
+            }
             if (slot.quantity > amount) {
                 slot.quantity -= amount;
                 amount = 0;
@@ -1746,7 +1750,7 @@ export class Player extends Character {
         */
     }
 
-    public getLowestSlot(itype: ItemType): ItemSlotClass {
+    public getLowestSlot(itype: ItemType): ItemSlotClass | undefined {
         var minslot;
         for(var slot of this.itemSlots) {
             if (slot.itype == itype) {

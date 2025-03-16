@@ -11,6 +11,9 @@ import { trace } from "../../console";
 import { Armor } from "../Items/Armor";
 import { Weapon } from "../Items/Weapon";
 import { kGAMECLASS } from "../GlobalFlags/kGAMECLASS";
+import { ButtonDataList } from "../../../lib/src/coc/view/ButtonDataList";
+import { ButtonData } from "../../../lib/src/coc/view/ButtonData";
+import { Utils } from "../internals/Utils";
 
 /**
  * Created by aimozg on 12.01.14.
@@ -19,8 +22,8 @@ import { kGAMECLASS } from "../GlobalFlags/kGAMECLASS";
 export class Inventory extends BaseContent {
     private static inventorySlotName: any[] = ["first", "second", "third", "fourth", "fifth"];
 
-    private itemStorage: any[];
-    private gearStorage: any[];
+    private itemStorage: ItemSlotClass[];
+    private gearStorage: ItemSlotClass[];
     private callNext: any;		//These are used so that we know what has to happen once the player finishes with an item
     private callOnAbandon: any;	//They simplify dealing with items that have a sub menu. Set in inventoryMenu and in takeItem
     private currentItemSlot: ItemSlotClass | undefined;	//The slot previously occupied by the current item - only needed for stashes and items with a sub menu.
@@ -61,9 +64,34 @@ export class Inventory extends BaseContent {
         this.outputText("<b>Weapon</b>: " + this.player.weaponName + " (Attack - " + this.player.weaponAttack + ")\n");
         this.outputText("<b>Armor : </b>" + this.player.armorName + " (Defense - " + this.player.armorDef + ")\n");
         if (this.player.keyItems.length > 0) this.outputText("<b><u>\nKey Items:</u></b>\n");
-        for (x = 0; x < this.player.keyItems.length; x++) this.outputText(this.player.keyItems[x].keyName + "\n");
+        for (let x = 0; x < this.player.keyItems.length; x++) 
+            this.outputText(this.player.keyItems[x].keyName + "\n");
         this.menu();
-        for (x = 0; x < 5; x++) {
+
+        const inventoryList: ButtonDataList = new ButtonDataList();
+        const constButtons: ButtonDataList = new ButtonDataList();
+        
+        for (x = 0; x < this.player.itemSlots.length; x++) {
+            if (this.player.itemSlots[x].unlocked && this.player.itemSlots[x].quantity > 0) {
+                inventoryList.append(ButtonData.fromItemSlot(this.player.itemSlots[x], Utils.curry(this.useItemInInventory, x)));
+                foundItem = true;
+            }
+        }
+        if (this.player.weapon != WeaponLib.FISTS) {
+            constButtons.add("Unequip", this.unequipWeapon, "Unequip your current weapon")
+        }
+
+        constButtons.add("Key items", this.keyItems);
+
+        if (this.getGame().inCombat && this.player.findStatusAffect(StatusAffects.Sealed) >= 0 && this.player.statusAffectv1(StatusAffects.Sealed) == 3) {
+            this.outputText("\nYou reach for your items, but you just can't get your pouches open.  <b>Your ability to use items was sealed, and now you've wasted a chance to attack!</b>\n\n");
+            this.getGame().enemyAI();
+            return;
+        }
+        this.outputText("\nWhich item will you use?");
+        const backFunction = (this.getGame().inCombat? Utils.curry(kGAMECLASS.combatMenu, false): this.playerMenu);
+        BaseContent.submenu(inventoryList, backFunction, 0, false, constButtons);
+        /*for (x = 0; x < 5; x++) {
             if (this.player.itemSlots[x].unlocked && this.player.itemSlots[x].quantity > 0) {
                 this.addButton(x, (this.player.itemSlots[x].itype.shortName + " x" + this.player.itemSlots[x].quantity), this.useItemInInventory, x);
                 foundItem = true;
@@ -105,7 +133,30 @@ export class Inventory extends BaseContent {
         if (this.getGame().inCombat)
             this.addButton(9, "Back", kGAMECLASS.combatMenu, false); //Player returns to the combat menu on cancel
         else this.addButton(9, "Back", this.playerMenu);
-        //Gone			menuLoc = 1;
+        //Gone			menuLoc = 1; */
+    }
+
+    public keyItems(): void {
+        const keyItemsList: ButtonDataList = new ButtonDataList();        
+
+        if (!this.getGame().inCombat && this.inDungeon == false && this.inRoomedDungeon == false) {
+            if (this.getGame().nieveHoliday() && this.flags[kFLAGS.NIEVE_STAGE] > 0 && this.flags[kFLAGS.NIEVE_STAGE] < 5) {
+                if (this.flags[kFLAGS.NIEVE_STAGE] == 1)
+                    this.outputText("\nThere's some odd snow here that you could do something with...\n");
+                else this.outputText("\nYou have a snow" + this.getGame().nieveMF("man", "woman") + " here that seems like it could use a little something...\n");
+                keyItemsList.add("Snow", this.getGame().nieveBuilding);
+            }
+            if (this.flags[kFLAGS.FUCK_FLOWER_KILLED] == 0 && this.flags[kFLAGS.FUCK_FLOWER_LEVEL] >= 1) {
+                if (this.flags[kFLAGS.FUCK_FLOWER_LEVEL] == 4) this.outputText("\nHolli is in her tree at the edges of your camp.  You could go visit her if you want.\n");
+                keyItemsList.add((this.flags[kFLAGS.FUCK_FLOWER_LEVEL] >= 3 ? "Tree" : "Plant"), this.getGame().holliScene.treeMenu);
+            }
+            if (this.player.hasKeyItem("Dragon Egg") >= 0) {
+                this.getGame().emberScene.emberCampDesc();
+                keyItemsList.add("Egg", this.getGame().emberScene.emberEggInteraction);
+            }
+        }
+
+        BaseContent.submenu(keyItemsList, this.inventoryMenu, 0, false);
     }
 
     public stash(): void {

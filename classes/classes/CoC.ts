@@ -11001,16 +11001,16 @@ We can also do * italic * and ** bold ** text!
         text15?: string, butt15?: any): void { //New typesafe version
 
         this.menu();
-        this.addButton(0, text1, butt1);
-        this.addButton(1, text2, butt2);
-        this.addButton(2, text3, butt3);
-        this.addButton(3, text4, butt4);
-        this.addButton(4, text5, butt5);
-        this.addButton(5, text6, butt6);
-        this.addButton(6, text7, butt7);
-        this.addButton(7, text8, butt8);
-        this.addButton(8, text9, butt9);
-        this.addButton(9, text10, butt10);
+        if (text1 && butt1) this.addButton(0, text1, butt1);
+        if (text2 && butt2) this.addButton(1, text2, butt2);
+        if (text3 && butt3) this.addButton(2, text3, butt3);
+        if (text4 && butt4) this.addButton(3, text4, butt4);
+        if (text5 && butt5) this.addButton(4, text5, butt5);
+        if (text6 && butt6) this.addButton(5, text6, butt6);
+        if (text7 && butt7) this.addButton(6, text7, butt7);
+        if (text8 && butt8) this.addButton(7, text8, butt8);
+        if (text9 && butt9) this.addButton(8, text9, butt9);
+        if (text10 && butt10) this.addButton(9, text10, butt10);
         if (text11 && butt11) this.addButton(10, text11, butt11);
         if (text12 && butt12) this.addButton(11, text12, butt12);
         if (text13 && butt13) this.addButton(12, text13, butt13);

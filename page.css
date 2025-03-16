@@ -386,3 +386,10 @@ body {
     background-image: url("res/ui/button8.jpg");
 }
 
+/* Loading */
+ 
+.loading #topRowButtons,
+.loading #statsPanel,
+.loading #bottomRowButtons {
+    visibility: hidden;
+}

@@ -108,11 +108,7 @@ export class MainView {
         // Should error.
         if (!button) return;
 
-        button.labelText = label;
-        button.callback = callback;
-        button.toolTipText = toolTipViewText;
-        button.toolTipHeader = toolTipHeader;
-        button.visible = true;
+        button.show(label, callback, toolTipViewText, toolTipHeader);
     };
 
     public hideBottomButton(index: number) {
@@ -127,7 +123,7 @@ export class MainView {
     //////// Bottom Button Methods ////////
 
     // TODO: Refactor button set-up code to use callback and toolTipViewText here.
-    public setButton(index: number, label: string = '', callback?: any, toolTipViewText: string = '') {
+    public setButton(index: number, label: string = '', callback?: any, toolTipViewText: string = '', toolTipHeader: string = '') {
         if (index < 0 || index >= MainView._BOTTOM_BUTTON_COUNT) {
             trace("MainView.setButton called with out of range index:", index);
             // throw new RangeError();
@@ -135,7 +131,7 @@ export class MainView {
         }
 
         if (label) {
-            this.showBottomButton(index, label, callback, toolTipViewText);
+            this.showBottomButton(index, label, callback, toolTipViewText, toolTipHeader);
         }
         else {
             this.hideBottomButton(index);
