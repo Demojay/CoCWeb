@@ -100,15 +100,12 @@ export class MainView {
 
     //////// Internal(?) view update methods ////////
 
-    public showBottomButton(index: number, label: string, callback?: any, toolTipViewText: string = '', toolTipHeader: string = ''): void {
+    public showBottomButton(index: number, label: string, callback?: any, toolTipViewText: string = '', toolTipHeader: string = ''): CoCButton {
         // var buttonTF :TextField = this.bottomButtonTexts[ index ] as TextField,
         // 	buttonBG :MovieClip = this.bottomButtonBGs[ index ] as MovieClip;
         const button = this.bottomButtons[index];
 
-        // Should error.
-        if (!button) return;
-
-        button.show(label, callback, toolTipViewText, toolTipHeader);
+        return button.show(label, callback, toolTipViewText, toolTipHeader);
     };
 
     public hideBottomButton(index: number) {

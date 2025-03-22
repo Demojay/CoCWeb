@@ -1777,7 +1777,7 @@ export class Player extends Character {
     // 0..5 or -1 if no
     public roomInExistingStack(itype: ItemType): number {
         for (var i: number = 0; i < this.itemSlots.length; i++) {
-            if (this.itemSlot(i).itype == itype && this.itemSlot(i).quantity != 0 && this.itemSlot(i).quantity < 5)
+            if (this.itemSlot(i).itype == itype && this.itemSlot(i).quantity != 0 && this.itemSlot(i).quantity < this.itemSlot(i).itype.maxStackSize)
                 return i;
         }
         return -1;

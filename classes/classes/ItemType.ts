@@ -27,6 +27,7 @@ export class ItemType {
     protected _longName: string;
     protected _description: string;
     protected _value: number;
+    protected _maxStackSize:number;
 
     /**
      * Short name to be displayed on buttons
@@ -63,13 +64,21 @@ export class ItemType {
         return this._id;
     }
 
-    public constructor(_id: string, _shortName?: string, _longName?: string, _value: number = 0, _description?: string) {
+    /*
+    * The maximum amount of this item that can be held in a stack in an ItemSlot
+    */
+   public get maxStackSize(): number {
+    return this._maxStackSize;
+   }
+
+    public constructor(_id: string, _shortName?: string, _longName?: string, _value: number = 0, _description?: string, _maxStackSize:number = 5) {
 
         this._id = _id;
         this._shortName = _shortName || _id;
         this._longName = _longName || this.shortName;
         this._description = _description || this.longName;
         this._value = _value;
+        this._maxStackSize = _maxStackSize;
         if (ItemType.ITEM_LIBRARY[_id] != undefined) {
             CoC_Settings.error("Duplicate itemid " + _id + ", old item is " + (ItemType.ITEM_LIBRARY[_id] as ItemType).longName);
         }

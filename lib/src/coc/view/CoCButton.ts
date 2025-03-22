@@ -130,9 +130,12 @@ export class CoCButton {
         return this;
     }
 
-    public disableIf(condition:Boolean):CoCButton {
-        if (condition)
+    public disableIf(condition:Boolean, toolTipText?: string, toolTipHeader?: string):CoCButton {
+        if (condition) {
             this.disabled = true;
+            if (toolTipText) this.toolTipText = toolTipText;
+            if (toolTipHeader) this.toolTipHeader = toolTipHeader;
+        }
 
         return this;
     }

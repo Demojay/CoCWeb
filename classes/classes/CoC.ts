@@ -133,6 +133,7 @@ import { bindToClass } from "../ClassBinder";
 import { Lethice } from "./Scenes/Dungeons/D3/Lethice";
 import { DriderIncubus } from "./Scenes/Dungeons/D3/DriderIncubus";
 import { int } from "../int";
+import { CoCButton } from "../../lib/src/coc/view/CoCButton";
 
 // BREAKING ALL THE RULES.
 
@@ -2390,6 +2391,7 @@ export class CoC {
         //menu();
         //addButton(0,"Next",camp);
         this.flushOutputTextToGUI();
+        this.doNext(this.playerMenu);
     }
 
     public sockDescript(index: number): void {
@@ -10869,7 +10871,7 @@ We can also do * italic * and ** bold ** text!
     }
 
 
-    public addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
+    public addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): CoCButton {
         // if (func1 == undefined) return;
         //
         /* Let the mainView decide if index is valid
@@ -10889,9 +10891,9 @@ We can also do * italic * and ** bold ** text!
         if (!toolTipHeader)
             toolTipHeader = this.getButtonToolTipHeaderText(text);
 
-        this.mainView.showBottomButton(pos, text, callback, toolTipText, toolTipHeader);
-        //mainView.setOutputText( currentText );
+        const button = this.mainView.showBottomButton(pos, text, callback, toolTipText, toolTipHeader);
         this.flushOutputTextToGUI();
+        return button;
     }
 
     // public hasButton(arg: any): boolean {

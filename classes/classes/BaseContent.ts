@@ -19,6 +19,7 @@ import { OtherKeys, StatKeys } from "../../lib/src/coc/view/StatsView";
 import { ASDate } from "./ASDate";
 import { ButtonData } from "../../lib/src/coc/view/ButtonData";
 import { ButtonDataList } from "../../lib/src/coc/view/ButtonDataList";
+import { CoCButton } from "../../lib/src/coc/view/CoCButton";
 
 /**
  * Quick hacky method to wrap new content in a class-based structure
@@ -266,8 +267,8 @@ export class BaseContent extends Utils {
         kGAMECLASS.doYesNo(eventYes, eventNo);
     }
 
-    protected addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): void {
-        kGAMECLASS.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
+    protected addButton(pos: number, text: string = "", func1?: any, arg1: any = -9000, arg2: any = -9000, arg3: any = -9000, toolTipText?: string, toolTipHeader?: string): CoCButton {
+        return kGAMECLASS.addButton(pos, text, func1, arg1, arg2, arg3, toolTipText, toolTipHeader);
     }
 
     public static submenuPage:number = 0;

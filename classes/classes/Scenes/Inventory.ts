@@ -247,6 +247,54 @@ export class Inventory extends BaseContent {
         else this.callNext(); //When putting items back in your stash we should skip to the take from stash menu
     }
 
+    /*
+    * Returns the maximum number of copies for an item that can be added before the inventory is full
+    */
+    public roomForItem(itype: ItemType): number {
+    
+        return this.player.itemSlots.reduce((spaceLeft, itemSlot) => { 
+            if (itemSlot.itype == itype) {
+                return spaceLeft + (itype.maxStackSize - itemSlot.quantity);
+            } else if (itemSlot.isEmpty() && itemSlot.unlocked) {
+                return spaceLeft + itype.maxStackSize;
+            }
+            return spaceLeft;
+        }, 0);
+
+    }
+
+    /*
+    * Tries to add multiple instances of an item to the inventory, and returns the number of item that were successfully added
+    */
+   public tryToAddMultipleItems(itype: ItemType, quantity:number): number {
+    let amountDeposited:number = 0;
+
+    if (itype == undefined) {
+        CoC_Settings.error("takeItem(undefined)");
+        return amountDeposited;
+    }
+
+    if (itype == ItemType.NOTHING) return amountDeposited;
+
+    while (quantity > 0) {
+        let existingStack = this.player.roomInExistingStack(itype);
+        if (existingStack >= 0) {
+            this.player.itemSlot(existingStack).quantity++;
+            amountDeposited++;
+        } else {
+            let newStack = this.player.emptySlot();
+            if (newStack >= 0) {
+                this.player.itemSlot(newStack).quantity++;
+                amountDeposited++;
+            } else {
+                return amountDeposited;
+            }
+        }
+    }
+
+    return amountDeposited;
+   }
+
     //Check to see if anything is stored
     public hasItemsInStorage(): boolean { return this.itemAnyInStorage(this.itemStorage, 0, this.itemStorage.length); }
 
