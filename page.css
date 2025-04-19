@@ -93,6 +93,9 @@ body {
     position: absolute;
     top: 0;
     z-index: 1;
+}
+
+.statBar.animated {
     transition-property: width;
     transition-timing-function: linear;
     transition-duration: 0.5s;
