@@ -45,6 +45,10 @@ export class Armor extends Useable //Equipable
 
     public removeText(): void { } //Produces any text seen when removing the armor normally
 
+    public get fullDescription(): string {
+        return `${super.fullDescription}\nDefense: ${this.def}`;
+    }
+
     /*
             protected  equip(player:Player, returnOldItem: boolean,output: boolean): void
             {

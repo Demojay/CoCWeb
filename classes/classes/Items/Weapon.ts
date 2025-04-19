@@ -1,3 +1,4 @@
+import { kGAMECLASS } from "../GlobalFlags/kGAMECLASS";
 import { Useable } from "./Useable";
 
 /**
@@ -40,6 +41,10 @@ export class Weapon extends Useable //Equipable
     }
 
     public removeText(): void { } //Produces any text seen when removing the armor normally
+
+    public get fullDescription(): string {
+        return `${super.fullDescription}\nAttack: ${this.attack}`; 
+    }
 
     /*
             protected  equip(player:Player, returnOldItem: boolean, output: boolean): void

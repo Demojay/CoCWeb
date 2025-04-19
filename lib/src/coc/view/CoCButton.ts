@@ -5,6 +5,7 @@ export class CoCButton {
     private tooltip?: HTMLElement;
     private _toolTipText: string;
     private _toolTipHeader: string;
+    private _disabled: boolean;
 
     protected _callback?: () => void;
 
@@ -15,6 +16,7 @@ export class CoCButton {
         this.tooltip = element.getElementsByClassName('tooltip')[0] as HTMLElement;
         this._toolTipText = '';
         this._toolTipHeader = '';
+        this._disabled = false;
 
         this.button.addEventListener('mouseover', () => {
             if (this.toolTipText && this.tooltip)
@@ -25,9 +27,9 @@ export class CoCButton {
                 this.tooltip.classList.add('hidden');
         });
         this.button.addEventListener('click', () => {
-            if (this.tooltip)
+            if (this.tooltip && !this._disabled)
                 this.tooltip.classList.add('hidden');
-            if (this._callback)
+            if (this._callback && !this._disabled)
                 this._callback();
         });
     };
@@ -102,21 +104,19 @@ export class CoCButton {
     }
 
     public get disabled() {
-        if (this.element instanceof HTMLButtonElement) {
-            return (this.element as HTMLButtonElement).disabled;
-        }
-        return false;
+        return this._disabled;
     }
 
     public set disabled(value: boolean) {
-       if (this.element instanceof HTMLButtonElement) {
-        if (value) {
-            this.element.classList.add("disabled");
-        } else {
-            this.element.classList.remove("disabled");
+        let buttonElement = this.element.querySelector("a");
+        if (buttonElement) {
+            if (value) {
+                buttonElement.classList.add("dim")
+            } else {
+                buttonElement.classList.remove("dim")
+            }
         }
-        (this.element as HTMLButtonElement).disabled = value;
-       } 
+        this._disabled = value;
     }
 
     //TODO: Add reset and methods from COCX

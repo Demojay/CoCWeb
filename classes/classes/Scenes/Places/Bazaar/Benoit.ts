@@ -5,6 +5,10 @@ import { PerkLib } from "../../../PerkLib";
 import { ItemType } from "../../../ItemType";
 import { StatusAffects } from "../../../StatusAffects";
 import { HORNS_DEMON, TAIL_TYPE_DEMONIC, EARS_DOG, TAIL_TYPE_DOG, TAIL_TYPE_CAT, EARS_CAT, LOWER_BODY_TYPE_HARPY, WING_TYPE_FEATHERED_LARGE, SKIN_TYPE_SCALES, WING_TYPE_BEE_LIKE_SMALL, WING_TYPE_BEE_LIKE_LARGE, LOWER_BODY_TYPE_BEE } from "../../../../../includes/appearanceDefs";
+import { ButtonDataList } from "../../../../../lib/src/coc/view/ButtonDataList";
+import { ShoppingCart } from "../../../internals/ShoppingCart";
+import { Utils } from "../../../internals/Utils";
+import { BaseContent } from "../../../BaseContent";
 
 //  TIMES_IN_BENOITS: number = 562;
 //  BENOIT_AFFECTION: number = 563;
@@ -26,8 +30,16 @@ import { HORNS_DEMON, TAIL_TYPE_DEMONIC, EARS_DOG, TAIL_TYPE_DOG, TAIL_TYPE_CAT,
 export class Benoit extends BazaarAbstractContent {
 
     //Fen, you'll need a function to determine gendered pronouns and version of name for this character. I've formatted all the eligible places I found in the order of [male/female]. -Z
+    /**
+     * Check benoit's gender
+     * @returns true if benoit is male, false is benoit is female or a bimbo
+     */
+    public benoitIsMale(): boolean {
+        return this.flags[kFLAGS.BENOIT_STATUS] == 0;
+    }
+    
     public benoitMF(stringM: string, stringF: string): string {
-        if (this.flags[kFLAGS.BENOIT_STATUS] == 1 || this.flags[kFLAGS.BENOIT_STATUS] == 2) return stringF;
+        if (!this.benoitIsMale()) return stringF;
         return stringM;
     }
     private benoitLover(): boolean {
@@ -287,23 +299,44 @@ export class Benoit extends BazaarAbstractContent {
         this.clearOutput();
         if (this.flags[kFLAGS.BENOIT_1] == '') this.updateBenoitInventory();
         if (this.flags[kFLAGS.BENOIT_EXPLAINED_SHOP] == 0) this.buyOrSellExplanationFirstTime();
-        var buyMod: number = 2;
+        var buyMod: number = this.benoitIsMale()? 2: 1.66;
+        const shopKeeper = this.benoitMF("Benoit", "Benoite");
+        const descString = `\"<i>Some may call zis junk,</i>\" says ${shopKeeper}, indicating ${this.benoitMF("his", "her")} latest wares.  \"<i>Me... I call it garbage.</i>\"`;
 
-        if (this.flags[kFLAGS.BENOIT_STATUS] == 1) {
-            buyMod = 1.66;
-            this.outputText("\"<i>Some may call zis junk,</i>\" says Benoite, indicating her latest wares.  \"<i>Me... I call it garbage.</i>\"");
+        this.outputText(descString);
+
+        const item1: ItemType = ItemType.lookupItem(this.flags[kFLAGS.BENOIT_1]);
+        const item2: ItemType = ItemType.lookupItem(this.flags[kFLAGS.BENOIT_2]);
+        const item3: ItemType = ItemType.lookupItem(this.flags[kFLAGS.BENOIT_3]);
+
+        this.outputText("\n\n<b><u>" + shopKeeper + "'s Prices</u></b>", false);
+        this.outputText("\n" + Utils.capitalizeFirstWord(item1.longName) + ": " + Math.round(buyMod * item1.value));
+        this.outputText("\n" + Utils.capitalizeFirstWord(item2.longName) + ": " + Math.round(buyMod * item2.value));
+        this.outputText("\n" + Utils.capitalizeFirstWord(item3.longName) + ": " + Math.round(buyMod * item3.value));
+
+        const itemChoices: ButtonDataList = new ButtonDataList();
+        const onBuyCallback = this.benoitBuyCallback.bind(this);
+
+        itemChoices.add(item1.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.benoitsBuyMenu, shopKeeper, item1, descString, onBuyCallback, buyMod * item1.value),
+            item1.fullDescription, Utils.capitalizeFirstWord(item1.longName));
+        itemChoices.add(item2.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.benoitsBuyMenu, shopKeeper, item2, descString, onBuyCallback, buyMod * item2.value),
+            item2.fullDescription, Utils.capitalizeFirstWord(item2.longName));
+        itemChoices.add(item3.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.benoitsBuyMenu, shopKeeper, item3, descString, onBuyCallback, buyMod * item3.value),
+            item3.fullDescription, Utils.capitalizeFirstWord(item3.longName));
+
+        BaseContent.submenu(itemChoices, this.benoitIntro);
+    }
+
+    private benoitBuyCallback (iType: ItemType, amountBought: number, pricePaid:number, utils: ShoppingCart) {
+        if (this.benoitLover()) {
+            this.outputText("After examining what you've picked out with " + this.benoitMF("his", "her") + " fingers, " + this.benoitMF("Benoit", "Benoite") + " hands it over and accepts your gems with a grin.")
+        } else {
+            this.outputText("After examining what you've picked out with " + this.benoitMF("his", "her") + " fingers, " + this.benoitMF("Benoit", "Benoite") + " hands it over, names the price and accepts your gems with a curt nod.\n\n");
         }
-        else {
-            this.outputText("\"<i>Some may call zis junk,</i>\" says Benoit, indicating his latest wares.  \"<i>Me... I call it garbage.</i>\"");
-        }
-        this.outputText("\n\n<b><u>" + this.benoitMF("Benoit", "Benoite") + "'s Prices</u></b>", false);
-        this.outputText("\n" + ItemType.lookupItem(this.flags[kFLAGS.BENOIT_1]).longName + ": " + Math.round(buyMod * ItemType.lookupItem(this.flags[kFLAGS.BENOIT_1]).value));
-        this.outputText("\n" + ItemType.lookupItem(this.flags[kFLAGS.BENOIT_2]).longName + ": " + Math.round(buyMod * ItemType.lookupItem(this.flags[kFLAGS.BENOIT_2]).value));
-        this.outputText("\n" + ItemType.lookupItem(this.flags[kFLAGS.BENOIT_3]).longName + ": " + Math.round(buyMod * ItemType.lookupItem(this.flags[kFLAGS.BENOIT_3]).value));
-        this.simpleChoices(this.flags[kFLAGS.BENOIT_1], this.createCallBackFunction(this.benoitTransactBuy, 1),
-            this.flags[kFLAGS.BENOIT_2], this.createCallBackFunction(this.benoitTransactBuy, 2),
-            this.flags[kFLAGS.BENOIT_3], this.createCallBackFunction(this.benoitTransactBuy, 3),
-            "", undefined, "Back", this.benoitIntro);
+        this.benoitAffection(3);
+
+        this.outputText("\n");
+        this.outputText("You place " + amountBought + " of them in your bag, leaving you with " + this.player.itemCount(iType) + " of them.");
     }
 
     private benoitSellMenu(): void {

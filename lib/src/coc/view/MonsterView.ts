@@ -75,7 +75,7 @@ export class MonsterView {
 
         if (this.monster) {
 
-            this.name.setText(this.monster.short);
+            this.name.setText(this.monster.short + ` (Level ${this.monster.level})`);
 
             if (this.oldStats.hp && (this.oldStats.hp > this.monster.HP)) {
                 this.stats.hp.showDown();

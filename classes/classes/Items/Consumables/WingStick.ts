@@ -8,7 +8,7 @@ import { Utils } from "../../internals/Utils";
 export class WingStick extends Consumable {
 
     public constructor() {
-        super("W.Stick", "Wingstick", "a wingstick", 16, "A tri-bladed throwing weapon.  Though good for only a single use, it's guaranteed to do high damage if it hits.  (Cost: 16) (DMG: 40-100)");
+        super("W.Stick", "Wingstick", "a wingstick", 16, "A tri-bladed throwing weapon.  Though good for only a single use, it's guaranteed to do high damage if it hits.");
     }
 
     public canUse(): boolean {
@@ -32,6 +32,10 @@ export class WingStick extends Consumable {
             if (this.game.monster.HP < 0) this.game.monster.HP = 0;
         }
         return (false);
+    }
+
+    public get fullDescription(): string {
+        return `${super.fullDescription}\nDamage: 40~100`;
     }
 }
 

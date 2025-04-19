@@ -10546,9 +10546,9 @@ We can also do * italic * and ** bold ** text!
         }
 
         var itype: ItemType = ItemType.lookupItem(buttonText);
-        if (itype != undefined) toolTipText = itype.description;
+        if (itype != undefined) toolTipText = itype.fullDescription;
         itype = ItemType.lookupItemByShort(buttonText);
-        if (itype != undefined) toolTipText = itype.description;
+        if (itype != undefined) toolTipText = itype.fullDescription;
         if (buttonText.indexOf("Tail Whip") != -1) {
             toolTipText = "Whip your foe with your tail to enrage them and lower their defense!";
         }

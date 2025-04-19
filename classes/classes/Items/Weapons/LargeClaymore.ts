@@ -7,7 +7,7 @@ import { Weapon } from "../Weapon";
 export class LargeClaymore extends Weapon {
 
     public constructor() {
-        super("Claymor", "L.Claymore", "large claymore", "a large claymore", "cleaving sword-slash", 15, 1000, "A massive sword that a very strong warrior might use.  Requires 40 strength to use.  (ATK: 15) (Cost: 1000)", "Large");
+        super("Claymor", "L.Claymore", "large claymore", "a large claymore", "cleaving sword-slash", 15, 1000, "A massive sword that a very strong warrior might use.  Requires 40 strength to use.", "Large");
     }
 
     public canUse(): boolean {

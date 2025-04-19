@@ -58,6 +58,15 @@ export class ItemType {
     }
 
     /**
+     * Detailed description to use on tooltips, along with additional details such as attack/defense/cost values etc.
+     */
+
+    public get fullDescription(): string {
+        return `${this.description}\n\nCost: ${this.value} ${this.value != 1? "gems": "gem"}`;
+    }
+
+
+    /**
      * 7-character unique (across all the versions) string, representing that item type.
      */
     public get id(): string {

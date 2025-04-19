@@ -2,6 +2,9 @@ import { BaseContent } from "../../BaseContent";
 import { kFLAGS } from "../../GlobalFlags/kFLAGS";
 import { ItemType } from "../../ItemType";
 import { trace } from "../../../console";
+import { ButtonDataList } from "../../../../lib/src/coc/view/ButtonDataList";
+import { Utils } from "../../internals/Utils";
+import { ShoppingCart } from "../../internals/ShoppingCart";
 
 export class Lumi extends BaseContent {
 
@@ -54,14 +57,46 @@ export class Lumi extends BaseContent {
         this.outputText("You ask Lumi if you can see her potions.  She smiles at you and pulls out several bottles from her desk and shows them to you.\n\n\"<i>Gawantied qwality, made by Lumi herself,</i>\" she says proudly.\n\n", false);
         this.outputText("Lust Draft - 15 gems\nGoblin Ale - 20 gems\nOviposition Elixir - 45 gems\n", false);
 
+        const itemChoices = new ButtonDataList();
+        
+        [
+            {
+                "item": this.consumables.L_DRAFT,
+                "buyString": "You point at the bottle filled with bubble-gum pink fluid.\n\n\"<i>De lust dwaft? Always a favowite, with it you nevar have to worwy about not bein weady for sexy time; one of my fiwst creations. 15 gems each.</i>\"\n\n" +
+                    "Will you buy the lust draft?",
+                "cost": 15
+            },
+            {
+                "item": this.consumables.GOB_ALE,
+                "buyString": "You point at the flagon. \"<i>Oh? Oh thats Lumi's... actually no, dat tispsy stuff for 20 gems. You'll like if you want to be like Lumi. Do you like it?</i>\"\n\n" + 
+                    "Will you buy the goblin ale?",
+                "cost": 20
+            },
+            {
+                "item": this.consumables.OVIELIX,
+                "buyString": "You point at the curious hexagonal bottle. \"<i>De Oviposar Elixir? Made baithsed on da giant bee's special stuff dey give deir queen. It will help make de burfing go faster, an if you dwink it while you awen pweggy, iw will give you some eggs to burf later. More dwinks, eqwals more and biggar eggs. Lumi charges 45 gems for each dose.</i>\"\n\n" + 
+                    "Will you buy the Ovi Elixir?",
+                "cost": 45
+            }
+        ].forEach((itemArr) => {
+            itemChoices.add(itemArr.item.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.lumiShop, "Lumi", itemArr.item, itemArr.buyString, 
+                 (iType:ItemType, amountBought:number, pricePaid:number) => {
+                    this.outputText("\n");
+                    this.outputText("You pay Lumi the gems, and she hands you " + iType.longName + " saying, \"<i>Here ya go!</i>\"\n\n");
+                    this.outputText("You place " + amountBought + " of them in your bag, leaving you with " + this.player.itemCount(iType) + " of them.");
+                }, itemArr.cost), itemArr.item.fullDescription, Utils.capitalizeFirstWord(itemArr.item.shortName));
+        })
+
+        BaseContent.submenu(itemChoices, this.lumiLabChoices);
+        
         //The player is given a list of choices, clicking on one gives the description and the price, like Giacomo.
-        this.simpleChoices(this.consumables.L_DRAFT.shortName, this.lumiLustDraftPitch,
+        /*this.simpleChoices(this.consumables.L_DRAFT.shortName, this.lumiLustDraftPitch,
             this.consumables.GOB_ALE.shortName, this.lumiPitchGobboAle,
             this.consumables.OVIELIX.shortName, this.lumiPitchOviElixer,
-            "", undefined, "Leave", this.lumiLabChoices);
+            "", undefined, "Leave", this.lumiLabChoices);*/
     }
 
-    //Lust Draft
+    /*//Lust Draft
     private lumiLustDraftPitch(): void {
         this.spriteSelect(37);
         this.clearOutput();
@@ -93,7 +128,7 @@ export class Lumi extends BaseContent {
         //After choosing, and PC has enough gems
         var cost: number = 0;
         if (itype == this.consumables.OVIELIX)
-            cost = 45;
+            cost = 45; 
         if (itype == this.consumables.GOB_ALE)
             cost = 20;
         if (itype == this.consumables.L_DRAFT)
@@ -110,7 +145,7 @@ export class Lumi extends BaseContent {
             //Return to main Lumi menu
             this.doNext(this.lumiShop);
         }
-    }
+    } */
 
     public lumiEnhance(justCheck: boolean = false): boolean {
         this.spriteSelect(37);

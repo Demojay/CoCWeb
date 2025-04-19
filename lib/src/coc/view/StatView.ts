@@ -72,6 +72,7 @@ export class StatViewWithBar extends StatView {
     }
 
     public setBar(percent: number) {
+        if (percent > 1) percent = 1;
         this.bar.style.width = percent * 100 + '%';
     }
 }

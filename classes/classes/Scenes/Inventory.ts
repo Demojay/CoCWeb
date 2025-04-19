@@ -173,24 +173,69 @@ export class Inventory extends BaseContent {
         }
         if (this.player.hasKeyItem("Camp - Chest") >= 0) {
             this.outputText("You have a large wood and iron chest to help store excess items located near the portal entrance.\n\n");
-            this.addButton(0, "Chest Store", this.pickItemToPlaceInCampStorage);
-            if (this.hasItemsInStorage()) this.addButton(1, "Chest Take", this.pickItemToTakeFromCampStorage);
+            this.addButton(0, "Chest", this.showChestStashMenu);
         }
         //Weapon Rack
         if (this.flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00254] > 0) {
             this.outputText("There's a weapon rack set up here, set up to hold up to nine various weapons.");
-            this.addButton(2, "W.Rack Put", this.pickItemToPlaceInWeaponRack);
-            if (this.weaponRackDescription()) this.addButton(3, "W.Rack Take", this.pickItemToTakeFromWeaponRack);
+            this.addButton(1, "W. Rack", this.showWeaponStashMenu)
             this.outputText("\n\n");
         }
         //Armor Rack
         if (this.flags[kFLAGS.UNKNOWN_FLAG_NUMBER_00255] > 0) {
             this.outputText("Your camp has an armor rack set up to hold your various sets of gear.  It appears to be able to hold nine different types of armor.");
-            this.addButton(5, "A.Rack Put", this.pickItemToPlaceInArmorRack);
-            if (this.armorRackDescription()) this.addButton(6, "A.Rack Take", this.pickItemToTakeFromArmorRack);
+            this.addButton(2, "A. Rack", this.showArmorStashMenu);
             this.outputText("\n\n");
         }
-        this.addButton(9, "Back", this.playerMenu);
+        this.addButton(14, "Back", this.playerMenu);
+    }
+
+    private showChestStashMenu(): void {
+        this.clearOutput();
+        this.menu();
+        const chestList = this.getChestStashList();
+        this.outputText(`Chest Contents (${chestList.length}/9):\n\n`);
+        this.addButton(0, "Chest Store", this.pickItemToPlaceInCampStorage);
+        if (chestList.length) {
+            this.addButton(1, "Chest Take", this.pickItemToTakeFromCampStorage);
+
+            chestList.forEach(itemName => {
+                this.outputText(itemName + "\n")
+            });
+        }
+        this.addButton(14, "Back", this.stash);
+    }
+
+    private showWeaponStashMenu(): void {
+        this.clearOutput();
+        this.menu();
+        const weaponList = this.getWeaponStashList();
+        this.outputText(`Weapon Stash Contents (${weaponList.length}/9):\n\n`);
+        this.addButton(2, "W.Rack Put", this.pickItemToPlaceInWeaponRack);
+        if (weaponList.length) {
+            this.addButton(3, "W.Rack Take", this.pickItemToTakeFromWeaponRack);
+
+            weaponList.forEach(itemName => {
+                this.outputText(itemName + "\n")
+            });
+        }
+        this.addButton(14, "Back", this.stash);
+    }
+
+    private showArmorStashMenu(): void {
+        this.clearOutput();
+        this.menu();
+        let armorList = this.getArmorStashList();
+        this.outputText(`Armor Stash Contents (${armorList.length}/9):\n\n`);
+        this.addButton(5, "A.Rack Put", this.pickItemToPlaceInArmorRack);
+        if (armorList.length) {
+            this.addButton(6, "A.Rack Take", this.pickItemToTakeFromArmorRack);
+
+            armorList.forEach(itemName => {
+                this.outputText(itemName + "\n")
+            });
+        }
+        this.addButton(14, "Back", this.stash);
     }
 
     public takeItem(itype: ItemType | undefined, nextAction: any, overrideAbandon?: any, source?: ItemSlotClass): void {
@@ -281,11 +326,13 @@ export class Inventory extends BaseContent {
         if (existingStack >= 0) {
             this.player.itemSlot(existingStack).quantity++;
             amountDeposited++;
+            quantity--;
         } else {
             let newStack = this.player.emptySlot();
             if (newStack >= 0) {
-                this.player.itemSlot(newStack).quantity++;
+                this.player.itemSlot(newStack).setItemAndQty(itype, 1);
                 amountDeposited++;
+                quantity--;
             } else {
                 return amountDeposited;
             }
@@ -475,6 +522,36 @@ export class Inventory extends BaseContent {
             }
     */
 
+    private getStorageItemNames(storage: ItemSlotClass[], startSlot: number = 0, endSlot?: number): string[] {
+        var names: string[] = [];
+        if (!endSlot) endSlot = storage.length
+
+        for (let index = startSlot; index < endSlot; index++) {
+            let slot = storage[index];
+            if (slot.quantity > 0) {
+                let name = Utils.capitalizeFirstWord(slot.itype.longName);
+                if (slot.quantity > 1) {
+                    name += " x" + slot.quantity;
+                }
+                names.push(name);
+            }
+        }
+        
+        return names;
+    }
+
+    private getArmorStashList(): string[] {
+        return this.getStorageItemNames(this.gearStorage, 9, 18);
+    }
+
+    private getWeaponStashList(): string[] {
+        return this.getStorageItemNames(this.gearStorage, 0, 9);
+    }
+
+    private getChestStashList(): string[] {
+        return this.getStorageItemNames(this.itemStorage);
+    }
+
     private armorRackDescription(): boolean {
         if (this.itemAnyInStorage(this.gearStorage, 9, 18)) {
             var itemList: any[] = [];
@@ -509,24 +586,24 @@ export class Inventory extends BaseContent {
 
     private pickItemToTakeFromCampStorage(): void {
         this.callNext = this.pickItemToTakeFromCampStorage;
-        this.pickItemToTakeFromStorage(this.itemStorage, 0, this.itemStorage.length, "storage");
+        this.pickItemToTakeFromStorage(this.itemStorage, 0, this.itemStorage.length, "storage", this.showChestStashMenu);
     }
 
     private pickItemToTakeFromArmorRack(): void {
         this.callNext = this.pickItemToTakeFromArmorRack;
-        this.pickItemToTakeFromStorage(this.gearStorage, 9, 18, "rack");
+        this.pickItemToTakeFromStorage(this.gearStorage, 9, 18, "rack", this.getArmorStashList);
     }
 
     private pickItemToTakeFromWeaponRack(): void {
         this.callNext = this.pickItemToTakeFromWeaponRack;
-        this.pickItemToTakeFromStorage(this.gearStorage, 0, 9, "rack");
+        this.pickItemToTakeFromStorage(this.gearStorage, 0, 9, "rack", this.getWeaponStashList);
     }
 
-    private pickItemToTakeFromStorage(storage: any[], startSlot: number, endSlot: number, text: string): void {
+    private pickItemToTakeFromStorage(storage: any[], startSlot: number, endSlot: number, text: string, backFunction: Function): void {
         this.clearOutput(); //Selects an item from a gear slot. Rewritten so that it no longer needs to use numbered events
         this.hideUpDown();
         if (!this.itemAnyInStorage(storage, startSlot, endSlot)) { //If no items are left then return to the camp menu. Can only happen if the player removes the last item.
-            this.playerMenu();
+            backFunction();
             return;
         }
         this.outputText("What " + text + " slot do you wish to take an item from?");
@@ -535,7 +612,7 @@ export class Inventory extends BaseContent {
         for (var x: number = startSlot; x < endSlot; x++ , button++) {
             if (storage[x].quantity > 0) this.addButton(button, (storage[x].itype.shortName + " x" + storage[x].quantity), this.createCallBackFunction2(this.pickFrom, storage, x));
         }
-        this.addButton(9, "Back", this.stash);
+        this.addButton(9, "Back", backFunction);
     }
 
     private pickFrom(storage: any[], slotNum: number): void {
@@ -545,11 +622,11 @@ export class Inventory extends BaseContent {
         this.inventory.takeItem(itype, this.callNext, this.callNext, storage[slotNum]);
     }
 
-    private pickItemToPlaceInCampStorage(): void { this.pickItemToPlaceInStorage(this.placeInCampStorage, this.allAcceptable, "storage containers", false); }
+    private pickItemToPlaceInCampStorage(): void { this.pickItemToPlaceInStorage(this.placeInCampStorage, this.allAcceptable, "storage containers", false, this.showChestStashMenu); }
 
-    private pickItemToPlaceInArmorRack(): void { this.pickItemToPlaceInStorage(this.placeInArmorRack, this.armorAcceptable, "armor rack", true); }
+    private pickItemToPlaceInArmorRack(): void { this.pickItemToPlaceInStorage(this.placeInArmorRack, this.armorAcceptable, "armor rack", true, this.showArmorStashMenu); }
 
-    private pickItemToPlaceInWeaponRack(): void { this.pickItemToPlaceInStorage(this.placeInWeaponRack, this.weaponAcceptable, "weapon rack", true); }
+    private pickItemToPlaceInWeaponRack(): void { this.pickItemToPlaceInStorage(this.placeInWeaponRack, this.weaponAcceptable, "weapon rack", true, this.showWeaponStashMenu); }
 
     private allAcceptable(itype: ItemType): boolean { return true; }
 
@@ -557,7 +634,7 @@ export class Inventory extends BaseContent {
 
     private weaponAcceptable(itype: ItemType): boolean { return itype instanceof Weapon; }
 
-    private pickItemToPlaceInStorage(placeInStorageFunction: any, typeAcceptableFunction: any, text: string, showEmptyWarning: boolean): void {
+    private pickItemToPlaceInStorage(placeInStorageFunction: any, typeAcceptableFunction: any, text: string, showEmptyWarning: boolean, backFunction: Function): void {
         this.clearOutput(); //Selects an item to place in a gear slot. Rewritten so that it no longer needs to use numbered events
         this.hideUpDown();
         this.outputText("What item slot do you wish to empty into your " + text + "?");
@@ -570,7 +647,7 @@ export class Inventory extends BaseContent {
             }
         }
         if (showEmptyWarning && !foundItem) this.outputText("\n<b>You have no appropriate items to put in this rack.</b>");
-        this.addButton(9, "Back", this.stash);
+        this.addButton(14, "Back", backFunction);
     }
 
     private placeInCampStorage(slotNum: number): void {
@@ -588,7 +665,7 @@ export class Inventory extends BaseContent {
         this.doNext(this.pickItemToPlaceInWeaponRack);
     }
 
-    private placeIn(storage: any[], startSlot: number, endSlot: number, slotNum: number): void {
+    private placeIn(storage: ItemSlotClass[], startSlot: number, endSlot: number, slotNum: number): void {
         this.clearOutput();
         var x: number;
         var temp: number;
@@ -597,10 +674,11 @@ export class Inventory extends BaseContent {
         var orig: number = qty;
         this.player.itemSlots[slotNum].emptySlot();
         for (x = startSlot; x < endSlot && qty > 0; x++) { //Find any slots which already hold the item that is being stored
-            if (storage[x].itype == itype && storage[x].quantity < 5) {
-                temp = 5 - storage[x].quantity;
+            if (storage[x].itype == itype && storage[x].quantity < storage[x].itype.maxStackSize) {
+                temp = storage[x].itype.maxStackSize - storage[x].quantity;
                 if (qty < temp) temp = qty;
-                this.outputText("You add " + temp + "x " + itype.shortName + " into storage slot " + Inventory.num2Text(x + 1 - startSlot) + ".\n");
+                //this.outputText("You add " + itype.shortName + + " (x" + temp + ") into storage slot " + Inventory.num2Text(x + 1 - startSlot) + ".\n");
+                this.outputText(`You add ${itype.longName} ${(qty> 1)? "(x" + temp + ") ": ""}into storage slot ${Inventory.num2Text(x + 1 - startSlot)}.\n`);
                 storage[x].quantity += temp;
                 qty -= temp;
                 if (qty == 0) return;
@@ -609,7 +687,8 @@ export class Inventory extends BaseContent {
         for (x = startSlot; x < endSlot && qty > 0; x++) { //Find any empty slots and put the item(s) there
             if (storage[x].quantity == 0) {
                 storage[x].setItemAndQty(itype, qty);
-                this.outputText("You place " + qty + "x " + itype.shortName + " into storage slot " + Inventory.num2Text(x + 1 - startSlot) + ".\n");
+                //this.outputText("You place " + qty + "x " + itype.shortName + " into storage slot " + Inventory.num2Text(x + 1 - startSlot) + ".\n");
+                this.outputText(`You place ${itype.longName} ${(qty> 1)? "(x" + qty + ") ": ""}into storage slot ${Inventory.num2Text(x + 1 - startSlot)}.\n`);
                 qty = 0;
                 return;
             }

@@ -181,8 +181,9 @@ body {
 
 #mainSpriteDisplay {
     position: absolute;
-    top: 91%;
-    left: 8%;
+    top: 85%;
+    left: 5%;
+    height: 10%;
 }
 
 #mainImageDisplay {
@@ -261,15 +262,19 @@ body {
     height: 540%;
     width: 212%;
     font-family: Shrewsbury-Titling-Bold, Palatino, Georgia, serif;
-    font-size: 1.3em;
-    font-weight: bold;
-    line-height: 1;
     padding: 17%;
     background-image: url("./res/ui/tooltip.png");
     background-repeat: no-repeat;
     background-size: contain;
     box-sizing: border-box;
     z-index: 4;
+    white-space: pre-wrap;
+}
+
+.tooltip .toolTipHeader {
+    font-weight: bold;
+    font-size: 1.3em;
+    line-height: 1;
 }
 
 .hidden {
@@ -280,9 +285,6 @@ body {
     opacity: 0.4;
 }
 
-.disabled {
-    opacity: 0.6;
-}
 
 .controlButton>.button {
     background-image: url("res/ui/button1.jpg");

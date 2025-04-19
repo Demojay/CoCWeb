@@ -32,6 +32,10 @@ export class ArmorWithPerk extends Armor {
         return super.playerRemove();
     }
 
+    public get fullDescription(): string {
+        return `${super.fullDescription}\nPerk: ${this.playerPerk.name}`;
+    }
+
     /*
             public  equipEffect(player:Player, output: boolean): void
             {

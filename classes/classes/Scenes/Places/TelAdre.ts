@@ -28,6 +28,9 @@ import { trace } from "../../../console";
 import { ItemType } from "../../ItemType";
 import { kGAMECLASS } from "../../GlobalFlags/kGAMECLASS";
 import { PerkLib } from "../../PerkLib";
+import { ButtonDataList } from "../../../../lib/src/coc/view/ButtonDataList";
+import { Utils } from "../../internals/Utils";
+import { ShoppingCart } from "../../internals/ShoppingCart";
 
 /**
 * The lovely town of Tel Adre
@@ -251,7 +254,6 @@ export class TelAdre extends BaseContent {
         if (this.flags[kFLAGS.ARIAN_PARK] > 0 && this.flags[kFLAGS.ARIAN_PARK] < 4) this.addButton(5, "Park", kGAMECLASS.arianScene.visitThePark);
         this.addButton(6, "Pawn", this.oswaldPawn);
         this.addButton(7, "Tower", this.library.visitZeMagesTower);
-        this.addButton(8, "Weapons", this.weaponShop);
         this.addButton(9, "Leave", this.camp.returnToCampUseOneHour);
     }
 
@@ -260,12 +262,13 @@ export class TelAdre extends BaseContent {
         this.addButton(0, "Blacksmith", this.armorShop);
         this.addButton(1, "Piercing", this.piercingStudio);
         this.addButton(2, "Tailor", this.tailorShoppe);
+        this.addButton(3, "Weapons", this.weaponShop);
 
         if (this.flags[kFLAGS.LOPPE_PC_MET_UMA] == 1) {
-            this.addButton(3, "Clinic", this.umasShop.enterClinic);
+            this.addButton(4, "Clinic", this.umasShop.enterClinic);
         }
 
-        this.addButton(4, "Back", this.telAdreMenu);
+        this.addButton(14, "Back", this.telAdreMenu);
     }
 
     public houses(): void {
@@ -1497,7 +1500,41 @@ export class TelAdre extends BaseContent {
         //outputText("\"<i>Vat can Yvonne make for you?  Ze platemail?  Or someting a bit lighter?</i>\" she asks you.", false);
         this.outputText("\"<i>What can I make for you?  Platemail?  Or something that breathes a little easier?</i>\" Yvonne asks, fanning herself.");
 
-        var egg = undefined;
+        const armorChoices = new ButtonDataList();
+        const constChoices = new ButtonDataList();
+        const descString = (value: number) => {
+            return `Yvonne gives you a serious look, then nods.` +
+            `  She pulls the armor off a rack and makes a few adjustments, banging away with her massive hammer to ensure a perfect fit.  The entire time, she's oblivious to the movements of her massive breasts, accidentally exposing her impressive nipples multiple times.\n\n` + 
+            `She finishes and turns to you, smiling broadly, \"<i>Now, that will be ${value} gems, unless you want to change your mind?</i>\"`;
+        }
+
+        var armors = [
+            this.armors.CHBIKNI,
+            this.armors.FULLCHN,
+            this.armors.FULLPLT,
+            this.armors.INDECST,
+            this.armors.LTHRROB,
+            this.armors.SCALEML
+        ]
+
+        armors.forEach((armor) => {
+            armorChoices.add(armor.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.armorShop, "Yvonne", armor, descString(armor.value)), 
+            armor.fullDescription, Utils.capitalizeFirstWord(armor.longName));
+        })
+
+        if (this.player.hasKeyItem("Dragon Eggshell") >= 0) {
+            this.outputText("\n\nThough the pieces on display have their arguable attractions, none of them really interest you.  Yvonne taps her foot impatiently.  \"<i>Well, I could make you something to order... if you have any decent materials, cutie.  200 gems.</i>\"");
+            if (this.player.gems < 200) {
+                this.outputText("\n\nYou can't afford that!");
+            }
+            else constChoices.add("Eggshell", kGAMECLASS.emberScene.getSomeStuff);
+        }
+
+        constChoices.add("Flirt", this.yvonneFlirt);
+
+        BaseContent.submenu(armorChoices, this.telAdreMenu, 0, false, constChoices);
+
+        /*var egg = undefined;
         if (this.player.hasKeyItem("Dragon Eggshell") >= 0) {
             this.outputText("\n\nThough the pieces on display have their arguable attractions, none of them really interest you.  Yvonne taps her foot impatiently.  \"<i>Well, I could make you something to order... if you have any decent materials, cutie.  200 gems.</i>\"");
             if (this.player.gems < 200) {
@@ -1511,7 +1548,7 @@ export class TelAdre extends BaseContent {
             this.armors.INDECST.shortName, this.createCallBackFunction(this.armorBuy, this.armors.INDECST),
             this.armors.LTHRROB.shortName, this.createCallBackFunction(this.armorBuy, this.armors.LTHRROB),
             this.armors.SCALEML.shortName, this.createCallBackFunction(this.armorBuy, this.armors.SCALEML),
-            "", null, "Eggshell", egg, "Flirt", this.yvonneFlirt, "Leave", this.telAdreMenu);
+            "", null, "Eggshell", egg, "Flirt", this.yvonneFlirt, "Leave", this.telAdreMenu);*/
     }
 
     public weaponShop(): void {
@@ -1521,7 +1558,28 @@ export class TelAdre extends BaseContent {
 
         this.outputText("His piercing blue eyes meet yours as he notices you, and he barks, \"<i>Buy something or fuck off.</i>\"\n\nWhat do you buy?", false);
 
-        this.choices(this.consumables.W_STICK.shortName, this.createCallBackFunction(this.weaponBuy, this.consumables.W_STICK),
+        const weaponsChoices = new ButtonDataList();
+        const descString = (value:number) => {
+            return `The gruff metal-working husky gives you a slight nod and slams the weapon down on the edge of his stand.  He grunts, \"<i>That'll be ${value} gems.</i>\"`;
+        };
+
+        [
+            this.consumables.W_STICK,
+            this.weapons.CLAYMOR,
+            this.weapons.WARHAMR,
+            this.weapons.KATANA,
+            this.weapons.SPEAR,
+            this.weapons.WHIP,
+            this.weapons.W_STAFF,
+            this.weapons.S_GAUNT
+        ].forEach((item) => {
+            weaponsChoices.add(item.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.weaponShop, "The husky", item, descString(item.value)),
+                item.fullDescription, Utils.capitalizeFirstWord(item.longName));
+        });
+
+        BaseContent.submenu(weaponsChoices, this.telAdreMenu);
+        
+        /*this.choices(this.consumables.W_STICK.shortName, this.createCallBackFunction(this.weaponBuy, this.consumables.W_STICK),
             this.weapons.CLAYMOR.shortName, this.createCallBackFunction(this.weaponBuy, this.weapons.CLAYMOR),
             this.weapons.WARHAMR.shortName, this.createCallBackFunction(this.weaponBuy, this.weapons.WARHAMR),
             this.weapons.KATANA.shortName, this.createCallBackFunction(this.weaponBuy, this.weapons.KATANA),
@@ -1529,7 +1587,7 @@ export class TelAdre extends BaseContent {
             this.weapons.WHIP.shortName, this.createCallBackFunction(this.weaponBuy, this.weapons.WHIP),
             this.weapons.W_STAFF.shortName, this.createCallBackFunction(this.weaponBuy, this.weapons.W_STAFF),
             this.weapons.S_GAUNT.shortName, this.createCallBackFunction(this.weaponBuy, this.weapons.S_GAUNT),
-            "", null, "Leave", this.telAdreMenu);
+            "", null, "Leave", this.telAdreMenu);*/
     }
     private weaponBuy(itype: ItemType): void {
         this.outputText("", true);

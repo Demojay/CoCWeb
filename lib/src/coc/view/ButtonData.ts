@@ -20,7 +20,7 @@ export class ButtonData {
     }
 
     public static fromItem(item: ItemType, callback?: Function) {
-        return new ButtonData(item.shortName, callback, item.description, Utils.capitalizeFirstWord(item.longName));
+        return new ButtonData(item.shortName, callback, item.fullDescription, Utils.capitalizeFirstWord(item.longName));
     }
 
     public static fromItemSlot(slot: ItemSlotClass, callback?: Function) {
@@ -29,7 +29,7 @@ export class ButtonData {
         if (slot.quantity > 1)
             quantityStr = " x" + slot.quantity
 
-        return new ButtonData(slot.itype.shortName + quantityStr, callback, slot.itype.description, Utils.capitalizeFirstWord(slot.itype.longName));
+        return new ButtonData(slot.itype.shortName + quantityStr, callback, slot.itype.fullDescription, Utils.capitalizeFirstWord(slot.itype.longName));
     }
 
     
