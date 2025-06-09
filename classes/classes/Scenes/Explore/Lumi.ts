@@ -87,7 +87,7 @@ export class Lumi extends BaseContent {
                 }, itemArr.cost), itemArr.item.fullDescription, Utils.capitalizeFirstWord(itemArr.item.shortName));
         })
 
-        BaseContent.submenu(itemChoices, this.lumiLabChoices);
+        BaseContent.submenu(itemChoices, this.lumiLabChoices, 0, false);
         
         //The player is given a list of choices, clicking on one gives the description and the price, like Giacomo.
         /*this.simpleChoices(this.consumables.L_DRAFT.shortName, this.lumiLustDraftPitch,

@@ -49,7 +49,6 @@ export class Inventory extends BaseContent {
 
     public inventoryMenu(): void {
         var x: number;
-        var foundItem: boolean = false;
         if (this.getGame().inCombat) {
             this.callNext = this.inventoryCombatHandler; //Player will return to combat after item use
         }
@@ -70,11 +69,16 @@ export class Inventory extends BaseContent {
 
         const inventoryList: ButtonDataList = new ButtonDataList();
         const constButtons: ButtonDataList = new ButtonDataList();
+        let unlockedSlots:number = 0;
+        let filledSlots:number = 0;
         
         for (x = 0; x < this.player.itemSlots.length; x++) {
-            if (this.player.itemSlots[x].unlocked && this.player.itemSlots[x].quantity > 0) {
-                inventoryList.append(ButtonData.fromItemSlot(this.player.itemSlots[x], Utils.curry(this.useItemInInventory, x)));
-                foundItem = true;
+            if (this.player.itemSlots[x].unlocked) {
+                unlockedSlots++;
+                if (this.player.itemSlots[x].quantity > 0) {
+                    inventoryList.append(ButtonData.fromItemSlot(this.player.itemSlots[x], Utils.curry(this.useItemInInventory, x)));
+                    filledSlots++;
+                }
             }
         }
         if (this.player.weapon != WeaponLib.FISTS) {
@@ -88,7 +92,7 @@ export class Inventory extends BaseContent {
             this.getGame().enemyAI();
             return;
         }
-        this.outputText("\nWhich item will you use?");
+        this.outputText(`\nWhich item will you use (${filledSlots}/${unlockedSlots})?`);
         const backFunction = (this.getGame().inCombat? Utils.curry(kGAMECLASS.combatMenu, false): this.playerMenu);
         BaseContent.submenu(inventoryList, backFunction, 0, false, constButtons);
         /*for (x = 0; x < 5; x++) {

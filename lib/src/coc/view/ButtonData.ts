@@ -12,11 +12,14 @@ export class ButtonData {
         public callback?: Function,
         public toolTipText?: string,
         public toolTipHeader?: string,
-        public visible: Boolean = true
+        public visible: boolean = true,
+        public disable: boolean = false,
     ) {}
 
     public applyTo(button:CoCButton) {
         button.show(this.label, this.callback, this.toolTipText, this.toolTipHeader);
+        if (!this.visible) button.visible = false;
+        if (this.disable) button.disabled = true;
     }
 
     public static fromItem(item: ItemType, callback?: Function) {

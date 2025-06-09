@@ -4,6 +4,9 @@ import { CoC } from "../../CoC";
 import { kFLAGS } from "../../GlobalFlags/kFLAGS";
 import { StatusAffects } from "../../StatusAffects";
 import { kGAMECLASS } from "../../GlobalFlags/kGAMECLASS";
+import { ButtonDataList } from "../../../../lib/src/coc/view/ButtonDataList";
+import { ShoppingCart } from "../../internals/ShoppingCart";
+import { Utils } from "../../internals/Utils";
 
 /*
  LICENSE 
@@ -118,9 +121,29 @@ export class Giacomo extends BaseContent implements TimeAwareInterface {
         this.spriteSelect(23);
         this.clearOutput();
         this.outputText("Which potion or tincture will you examine?");
-        this.simpleChoices("Vitality T.", this.pitchVitailtyTincture, "Scholars T.", this.pitchScholarsTea,
+
+        const itemChoices = new ButtonDataList();
+
+        itemChoices.add("Vitality T.", Utils.curry(ShoppingCart.confirmBuyMulti, this.potionMenu, "Giacomo", this.consumables.VITAL_T, 
+            "Giacomo holds up the item and says, \"<i>Ah, yes!  The quintessential elixir for all travelers, this little bottle of distilled livelihood will aid you in restoring your energy on your journey and, should you be hurt or injured, will aid the body's ability to heal itself.  Yes " + this.player.mf("sir", "madam") + ", this is liquid gold for pilgrim and adventurer alike.  Interested?  It is <b>15 gems</b></i>.\"  ",
+        undefined, 15));
+        itemChoices.add("Scholars T..", Utils.curry(ShoppingCart.confirmBuyMulti, this.potionMenu, "Giacomo", this.consumables.SMART_T, 
+            "Giacomo holds up a pouch of dried, fragrant leaves and begins his spiel, \"<i>Have you ever wondered how scholars and other smart folk keep up such a mental effort for so long?  They make a tea out of this fine mixture of quality plants and herbs.  Nothing but the best, this mysterious mixture of herbs in its Orange Pekoe base makes anyone, short of a lummox, as brainy as the finest minds of the land.  All you do is steep the leaves in some water and drink up!  Hot or cold, straight or sweetened with honey, your mind will run circles around itself once it has this for fuel.  Buy it now and I will throw in the strainer for free!  Interested?  Only <b>15 gems</b>!</i>\"  ",
+        undefined, 15));
+        
+        if (this.player.gender != 2) {
+            itemChoices.add("Cerulean P.", Utils.curry(ShoppingCart.confirmBuyMulti, this.potionMenu, "Giacomo", this.consumables.CERUL_P, 
+                "Giacomo makes his comical over-the-shoulder search and holds up a sky-blue bottle.  He grins widely as he begins his pitch, \"<i>My friend, you truly have a discerning eye.  Even the most successful of men seek to attract more women for pleasure and status.  This, my friend, will attract the most discerning and aroused of women.  Women attracted by this fine unction will NEVER say no.  I GUARANTEE that she will want pleasure every time you demand pleasure!  A bit of a caution to you, brother.  Some say this works TOO well.  If you aren't man enough to handle the women this urn draws to you, you'd best say so now and I will offer something more to your liking.  However, if you have the heart for it, I can sell you this little gem for <b>75 gems</b></i>!\"  ",
+            undefined, 75));
+        } else {
+            itemChoices.add("Cerulean P.", undefined, "Requires you to not be female.");
+        }
+
+        BaseContent.submenu(itemChoices, this.giacomoEncounter, 0, false);
+        
+        /*this.simpleChoices("Vitality T.", this.pitchVitailtyTincture, "Scholars T.", this.pitchScholarsTea,
             "Cerulean P.", (this.player.gender != 2 ? this.pitchCeruleanPotion : undefined), "", undefined, "Back", this.giacomoEncounter);
-        this.statScreenRefresh();
+        this.statScreenRefresh();*/
     }
 
     private bookMenu(): void {

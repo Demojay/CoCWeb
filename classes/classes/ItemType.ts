@@ -62,7 +62,7 @@ export class ItemType {
      */
 
     public get fullDescription(): string {
-        return `${this.description}\n\nCost: ${this.value} ${this.value != 1? "gems": "gem"}`;
+        return `${this.description}\n\nValue: ${this.value} ${this.value != 1? "gems": "gem"}`;
     }
 
 

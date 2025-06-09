@@ -324,7 +324,7 @@ export class Benoit extends BazaarAbstractContent {
         itemChoices.add(item3.shortName, Utils.curry(ShoppingCart.confirmBuyMulti, this.benoitsBuyMenu, shopKeeper, item3, descString, onBuyCallback, buyMod * item3.value),
             item3.fullDescription, Utils.capitalizeFirstWord(item3.longName));
 
-        BaseContent.submenu(itemChoices, this.benoitIntro);
+        BaseContent.submenu(itemChoices, this.benoitIntro, 0, false);
     }
 
     private benoitBuyCallback (iType: ItemType, amountBought: number, pricePaid:number, utils: ShoppingCart) {

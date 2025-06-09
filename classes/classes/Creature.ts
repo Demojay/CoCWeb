@@ -537,6 +537,18 @@ export class Creature extends Utils {
         return -1;
     }
 
+    public hasPerk(ptype: PerkType): boolean {
+        return this.findPerk(ptype) >= 0;
+    }
+
+    public hasAnyPerk(...ptypes: PerkType[]): boolean {
+        return ptypes.some((ptype) => this.hasPerk(ptype));
+    }
+
+    public hasAllPerks(...ptypes: PerkType[]): boolean {
+        return ptypes.every((ptype) => this.hasPerk(ptype));
+    }
+
     //Duplicate perk
     //Deprecated?
     public perkDuplicated(ptype: PerkType): boolean {
@@ -657,6 +669,18 @@ export class Creature extends Utils {
         return -1;
     }
     //}endregion
+
+    public hasStatusAffect(stype: StatusAffectType): boolean {
+        return this.findStatusAffect(stype) >= 0;
+    }
+
+    public hasAnyStatusAffect(...stypes: StatusAffectType[]): boolean {
+        return stypes.some((stype) => this.hasStatusAffect(stype));
+    }
+
+    public hasAllStatusAffects(...stypes: StatusAffectType[]): boolean {
+        return stypes.every((stype) => this.hasStatusAffect(stype));
+    }
 
 
     public changeStatusValue(stype: StatusAffectType, statusValueNum: number = 1, newNum: number = 0): void {
